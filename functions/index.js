@@ -1,6 +1,6 @@
 import { https } from "firebase-functions/v2";
 import { initializeApp } from "firebase-admin/app";
-import { updateDatesHandler } from "./updateDatesHandler.js";
+import { updateDatesHandler } from "./updateDates.js";
 
 initializeApp();
 
