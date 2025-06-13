@@ -1,8 +1,12 @@
+//index.js
 import { https } from "firebase-functions/v2";
 import { initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 import { updateDatesHandler } from "./updateDates.js";
 
+// Initialize Firebase Admin globally
 initializeApp();
+const db = getFirestore();
 
 export const FlairScheduleHelper = https.onRequest(
   { region: "europe-west2", cors: true },
@@ -11,7 +15,7 @@ export const FlairScheduleHelper = https.onRequest(
 
     try {
       if (action === "updateDates") {
-        return await updateDatesHandler(req, res);
+        return await updateDatesHandler(req, res, db);
       }
 
       return res.status(400).json({ error: "Action not recognised" });
