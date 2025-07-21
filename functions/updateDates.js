@@ -2,19 +2,6 @@
 import { table } from "@glideapps/tables";
 import { DateTime } from "luxon";
 
-// Configure the Glide table
-//const bfScheduleDatesTable = table({
-//token: "c5389e75-ed50-4e6c-b61d-3d94bfe8deaa",
-//  app: "rS9O2hVbqWGQrmriKHuJ",
-//  table: "native-table-m86V9FotCksCKNXcgxyx",
-//  columns: {
-//    eventId: { type: "string", name: "Name" },
-//    date: { type: "date-time", name: "VTjRN" }
-//  }
-//});
-
-
-
 export async function updateDatesHandler(req, res, db) {
   const {
     appId,
