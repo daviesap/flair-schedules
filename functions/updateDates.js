@@ -1,23 +1,47 @@
+//updateDates.js
 import { table } from "@glideapps/tables";
 import { DateTime } from "luxon";
 
-// Configure the Glide table
-const bfScheduleDatesTable = table({
-  token: "c5389e75-ed50-4e6c-b61d-3d94bfe8deaa",
-  app: "rS9O2hVbqWGQrmriKHuJ",
-  table: "native-table-m86V9FotCksCKNXcgxyx",
+export async function updateDatesHandler(req, res, db) {
+  const {
+    appId,
+    tableId,
+    columnEventId,
+    columnDateId,
+    eventId,
+    startDate,
+    endDate
+  } = req.body;
+
+
+  if (!appId || !tableId || !columnEventId || !columnDateId || !eventId || !startDate || !endDate) {
+    return res.status(400).json({ error: "Missing required parameters" });
+  }
+
+//Get Glide token from Firestore
+  let token;
+  try {
+    const tokenDoc = await db.collection('glideTokens').doc(appId).get();
+    if (!tokenDoc.exists) {
+      return res.status(404).json({ error: `No token found for appId ${appId}` });
+    }
+    token = tokenDoc.data().token;
+  } catch (err) {
+    console.error("Error fetching token:", err);
+    return res.status(500).json({ error: "Failed to retrieve token" });
+  }
+
+  // Configure the Glide table
+  const bfScheduleDatesTable = table({
+  token,
+  app: appId,
+  table: tableId,
   columns: {
-    eventId: { type: "string", name: "Name" },
-    date: { type: "date-time", name: "VTjRN" }
+    eventId: { type: "string", name: columnEventId },
+    date: { type: "date-time", name: columnDateId }
   }
 });
 
-export async function updateDatesHandler(req, res) {
-  const { eventId, startDate, endDate } = req.body;
-
-  if (!eventId || !startDate || !endDate) {
-    return res.status(400).json({ error: "Missing required parameters" });
-  }
 
   const start = DateTime.fromISO(startDate).startOf("day");
   const end = DateTime.fromISO(endDate).startOf("day");
