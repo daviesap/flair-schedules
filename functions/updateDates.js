@@ -70,7 +70,7 @@ export async function updateDatesHandler(req, res) {
   const rowsFinal = startCount - deletePromises.length + addPromises.length;
 
   res.status(200).json({
-    message: "Sync complete",
+    message: "Success",
     eventId,
     startDate,
     endDate,

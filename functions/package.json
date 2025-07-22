@@ -6,7 +6,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .js,.mjs"
+    "lint": "eslint . --ext .js,.mjs",
+    "deploy": "firebase deploy --only functions"
   },
   "dependencies": {
     "@glideapps/tables": "^1.0.0",
