@@ -1,8 +1,9 @@
-//index.js
+// index.js
 import { https } from "firebase-functions/v2";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { updateDatesHandler } from "./updateDates.js";
+import { mealsPivotHandler } from "./mealsPivot.js"; // 👈 new import
 
 // Initialize Firebase Admin globally
 initializeApp();
@@ -16,6 +17,10 @@ export const FlairScheduleHelper = https.onRequest(
     try {
       if (action === "updateDates") {
         return await updateDatesHandler(req, res, db);
+      }
+
+      if (action === "mealsPivot") {
+        return await mealsPivotHandler(req, res);
       }
 
       return res.status(400).json({ error: "Action not recognised" });
