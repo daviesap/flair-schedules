@@ -3,10 +3,11 @@ import ExcelJS from "exceljs";
 import { getStorage } from "firebase-admin/storage";
 import { v4 as uuidv4 } from "uuid";
 
-// Format for file name and generation note
+// Format for generation date
 function formatLongDate(date) {
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
     const day = dayNames[date.getUTCDay()];
     const dayNum = date.getUTCDate();
     const suffix = (n) => (n > 3 && n < 21 ? "th" : ["st", "nd", "rd"][n % 10 - 1] || "th");
@@ -26,22 +27,28 @@ function formatShortDate(dateStr) {
 
 export async function mealsPivotHandler(req, res) {
     try {
-        const { eventName, data } = req.body;
+        const { eventName, data, slot1, slot2, slot3, slot4 } = req.body;
         if (!eventName || !Array.isArray(data)) {
             return res.status(400).json({ error: "Missing eventName or data" });
         }
+
+        // Collect slots in order
+        const slots = [
+            { key: "slot1", ...slot1 },
+            { key: "slot2", ...slot2 },
+            { key: "slot3", ...slot3 },
+            { key: "slot4", ...slot4 }
+        ].filter(slot => slot && slot.abb);
 
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Meals Pivot");
 
         // Title row
-        worksheet.mergeCells("A1:D1");
         worksheet.getCell("A1").value = eventName;
         worksheet.getCell("A1").font = { bold: true, size: 14 };
 
-        // Generation date row
+        // Generated date row
         const generatedDate = formatLongDate(new Date());
-        worksheet.mergeCells("A2:D2");
         worksheet.getCell("A2").value = `Generated ${generatedDate}`;
 
         // Blank row
@@ -53,31 +60,12 @@ export async function mealsPivotHandler(req, res) {
         headerRow1.font = { bold: true };
         headerRow2.font = { bold: true };
 
-        // Build date→slots map
-        const dateMap = {};
-        for (const entry of data) {
-            const date = entry.Date.split("T")[0];
-            if (!dateMap[date]) dateMap[date] = [];
-
-            ["slot1", "slot2", "slot3", "slot4"].forEach((key) => {
-                const slot = entry[key];
-                if (slot?.type) {
-                    dateMap[date].push({ type: slot.type, abb: slot.abb, sort: slot.sort });
-                }
-            });
-        }
-
-        // Deduplicate & sort
-        for (const date in dateMap) {
-            dateMap[date] = Array.from(new Map(dateMap[date].map(s => [s.type, s])).values())
-                .sort((a, b) => a.sort - b.sort);
-        }
+        // Collect unique dates
+        const dateKeys = [...new Set(data.map(entry => entry.Date.split("T")[0]))].sort();
 
         // Column headers
         let colIndex = 3;
-        const dateKeys = Object.keys(dateMap).sort();
         for (const date of dateKeys) {
-            const slots = dateMap[date];
             const startCol = colIndex;
             const endCol = colIndex + slots.length - 1;
 
@@ -91,33 +79,56 @@ export async function mealsPivotHandler(req, res) {
             colIndex += slots.length;
         }
 
-        // Write data rows and totals
-        const totals = Array(colIndex - 3).fill(0);
+        // Group data by person (name+role)
+        const grouped = {};
         for (const entry of data) {
-            const rowValues = [entry.name, entry.role || ""];
-            let slotCounter = 0;
+            const key = `${entry.name}__${entry.role || ""}`;
+            if (!grouped[key]) {
+                grouped[key] = { name: entry.name, role: entry.role || "", meals: {} };
+            }
+            const dateKey = entry.Date.split("T")[0];
+            if (!grouped[key].meals[dateKey]) grouped[key].meals[dateKey] = {};
+            slots.forEach(slot => {
+                if (entry[slot.key]?.qty) {
+                    grouped[key].meals[dateKey][slot.key] =
+                        (grouped[key].meals[dateKey][slot.key] || 0) + entry[slot.key].qty;
+                }
+            });
+        }
+
+        // Write grouped rows
+        for (const personKey in grouped) {
+            const person = grouped[personKey];
+            const rowValues = [person.name, person.role];
             for (const date of dateKeys) {
-                const slots = dateMap[date];
-                slots.forEach((slot) => {
-                    const match = Object.values(entry).find((v) => v?.type === slot.type);
-                    const qty = match?.qty || 0;
-                    rowValues.push(qty || "");
-                    totals[slotCounter] += qty;
-                    slotCounter++;
+                slots.forEach(slot => {
+                    const qty = person.meals[date]?.[slot.key] || "";
+                    rowValues.push(qty);
                 });
             }
             worksheet.addRow(rowValues);
         }
 
-        // Totals row
-        const totalsRowValues = ["TOTAL", "", ...totals];
-        const totalsRow = worksheet.addRow(totalsRowValues);
+        // Totals row using formulas
+        const lastRowNumber = worksheet.lastRow.number;
+        const totalsRow = worksheet.addRow(["TOTAL", ""]);
         totalsRow.font = { bold: true };
 
-        // Center align all cells except columns A and B
-        worksheet.eachRow((row) => {
+        let formulaCol = 3;
+        for (const date of dateKeys) {
+            slots.forEach(() => {
+                const colLetter = worksheet.getColumn(formulaCol).letter;
+                totalsRow.getCell(formulaCol).value = {
+                    formula: `SUM(${colLetter}${headerRow2.number + 1}:${colLetter}${lastRowNumber})`
+                };
+                formulaCol++;
+            });
+        }
+
+        // Center align all cells except A/B
+        worksheet.eachRow(row => {
             row.eachCell((cell, colNumber) => {
-                if (colNumber > 2) {  // skip columns A (1) and B (2)
+                if (colNumber > 2) {
                     cell.alignment = { vertical: "middle", horizontal: "center" };
                 }
             });
@@ -125,13 +136,12 @@ export async function mealsPivotHandler(req, res) {
 
         // Column widths
         worksheet.columns.forEach((col, i) => {
-            col.width = i < 2 ? 15 : 6; // name/role wider, rest narrow
+            col.width = i < 2 ? 15 : 6;
         });
 
-        // Upload
+        // Upload to Firebase Storage
         const storage = getStorage();
         const bucket = storage.bucket();
-
         const fileName = `pivots/${eventName.replace(/\s+/g, "_")}_pivot_${generatedDate.replace(/\s+/g, "_")}.xlsx`;
         const file = bucket.file(fileName);
         const buffer = await workbook.xlsx.writeBuffer();
