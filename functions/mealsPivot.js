@@ -1,3 +1,4 @@
+// mealsPivot.js
 import { tmpdir } from "os";
 import { join } from "path";
 import ExcelJS from "exceljs";
@@ -44,42 +45,68 @@ export async function mealsPivotHandler(req, res) {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Meals");
 
-    // Add title and generation date
-    sheet.addRow([eventName]);
-    sheet.addRow([`Generated ${format(new Date(), "EEEE d MMM yyyy")}`]);
-    sheet.addRow([]); // Spacer
+    // Row 1: Title
+    const titleRow = sheet.addRow([eventName]);
+    titleRow.font = { bold: true };
 
-    // Header Rows
-    const dummyDateHeader = ["Name", "Role"]; // Not used for data insertion
-    const slotHeader = ["", ""];
+    // Row 2: Generated timestamp
+    const generatedAt = format(new Date(), "EEEE d MMM yyyy, h:mm a");
+    sheet.addRow([`Generated ${generatedAt}`]);
+
+    // Row 3: Spacer
+    sheet.addRow([]);
+
+    // Row 4: Name + Role + merged date cells
+    const headerRow = ["Name", "Role"];
+    const mergeRanges = [];
 
     let currentCol = 3;
     for (const date of allDates) {
       const formattedDate = format(parseISO(date), "EEE d MMM");
       const slotCount = sortedSlots.length;
-      const start = currentCol;
-      const end = currentCol + slotCount - 1;
+      const startCol = currentCol;
+      const endCol = currentCol + slotCount - 1;
 
-      // ✅ Merge header range and set visible label
-      sheet.mergeCells(4, start, 4, end);
-      sheet.getCell(4, start).value = formattedDate;
+      headerRow.push(formattedDate);
+      mergeRanges.push({ start: startCol, end: endCol });
 
-      // Row 5: meal abbreviations
-      for (const { abb } of sortedSlots) {
-        slotHeader.push(abb);
+      for (let i = 1; i < slotCount; i++) {
+        headerRow.push(""); // fill merged cells
       }
 
       currentCol += slotCount;
     }
 
-    // Row 4 already set manually, Row 5 is slot header
-    sheet.addRow(dummyDateHeader); // Row 4 placeholder for alignment
-    const slotHeaderRow = sheet.addRow(slotHeader); // Row 5
+    // Manually populate row 4 so it stays at the expected position
+    const headerRowNumber = 4;
+    headerRow.forEach((value, index) => {
+      const cell = sheet.getCell(headerRowNumber, index + 1);
+      cell.value = value;
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    });
 
-    slotHeaderRow.font = { bold: true };
-    slotHeaderRow.alignment = { vertical: "middle", horizontal: "center" };
+    // Merge the date columns
+    mergeRanges.forEach(({ start, end }) => {
+      sheet.mergeCells(4, start, 4, end);
+      const cell = sheet.getCell(4, start);
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.font = { bold: true };
+    });
 
-    // Data rows start from row 6
+    // Row 5: Meal abbreviations
+    const slotRow = ["", ""];
+    for (let i = 0; i < allDates.length; i++) {
+      for (const { abb } of sortedSlots) {
+        slotRow.push(abb);
+      }
+    }
+
+    const slotRowRef = sheet.addRow(slotRow);
+    slotRowRef.font = { bold: true };
+    slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
+
+    // Row 6+: Data rows
     for (const [key, dateData] of Object.entries(pivot)) {
       const [name, role] = key.split("__");
       const row = [name, role];
@@ -94,10 +121,30 @@ export async function mealsPivotHandler(req, res) {
       sheet.addRow(row);
     }
 
-    // Set column widths
+    // Set column widths:
+    // - The first two columns ("Name" and "Role") are made wider (20 units) to accommodate longer text.
+    // - All other columns (meal abbreviations) are narrower (4 units) since they only hold small numeric values.
     sheet.columns.forEach((col, idx) => {
-      col.width = idx < 2 ? 20 : 6;
+      col.width = idx < 2 ? 20 : 4;
     });
+
+    // Row for totals
+    const lastRowNumber = sheet.lastRow.number + 1;
+    const totalRow = sheet.getRow(lastRowNumber);
+    totalRow.getCell(1).value = "TOTAL";
+    totalRow.getCell(1).font = { bold: true };
+
+    const startRow = 6; // First row of data
+    const endRow = sheet.lastRow.number - 1; // Last data row (before this total row)
+    const colCount = sheet.columnCount;
+
+    for (let col = 3; col <= colCount; col++) {
+      const colLetter = sheet.getColumn(col).letter;
+      totalRow.getCell(col).value = { formula: `SUM(${colLetter}${startRow}:${colLetter}${endRow})` };
+      totalRow.getCell(col).font = { bold: true };
+    }
+
+    totalRow.commit();
 
     // Save to temp file
     const fileName = `${eventName}_Catering.xlsx`;
