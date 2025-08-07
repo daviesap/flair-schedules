@@ -121,30 +121,35 @@ export async function mealsPivotHandler(req, res) {
       sheet.addRow(row);
     }
 
-    // Set column widths:
-    // - The first two columns ("Name" and "Role") are made wider (20 units) to accommodate longer text.
-    // - All other columns (meal abbreviations) are narrower (4 units) since they only hold small numeric values.
-    sheet.columns.forEach((col, idx) => {
-      col.width = idx < 2 ? 20 : 4;
-    });
-
     // Row for totals
     const lastRowNumber = sheet.lastRow.number + 1;
     const totalRow = sheet.getRow(lastRowNumber);
     totalRow.getCell(1).value = "TOTAL";
     totalRow.getCell(1).font = { bold: true };
+    totalRow.getCell(1).alignment = { vertical: "middle" };
+    totalRow.getCell(2).value = "";
+    totalRow.getCell(2).alignment = { vertical: "middle" };
 
     const startRow = 6; // First row of data
-    const endRow = sheet.lastRow.number - 1; // Last data row (before this total row)
+    const endRow = sheet.lastRow.number - 1; // Last data row before total
     const colCount = sheet.columnCount;
 
     for (let col = 3; col <= colCount; col++) {
       const colLetter = sheet.getColumn(col).letter;
       totalRow.getCell(col).value = { formula: `SUM(${colLetter}${startRow}:${colLetter}${endRow})` };
       totalRow.getCell(col).font = { bold: true };
+      totalRow.getCell(col).alignment = { horizontal: "center", vertical: "middle" };
     }
 
     totalRow.commit();
+
+    // Set column widths:
+    // - The first two columns ("Name" and "Role") are made wider (20 units) to accommodate longer text.
+    // - All other columns (meal abbreviations) are narrower (4 units) since they only hold small numeric values.
+    sheet.columns.forEach((col, idx) => {
+      col.width = idx < 2 ? 20 : 3;
+    });
+
 
     // Save to temp file
     const fileName = `${eventName}_Catering.xlsx`;
