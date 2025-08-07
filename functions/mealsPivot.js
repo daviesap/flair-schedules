@@ -1,199 +1,125 @@
-// functions/mealsPivot.js
+import { tmpdir } from "os";
+import { join } from "path";
 import ExcelJS from "exceljs";
+import { parseISO, format } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
-import { v4 as uuidv4 } from "uuid";
-
-// Format for file name and generation note
-function formatLongDate(date) {
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-    const day = dayNames[date.getUTCDay()];
-    const dayNum = date.getUTCDate();
-    const suffix = (n) => (n > 3 && n < 21 ? "th" : ["st", "nd", "rd"][n % 10 - 1] || "th");
-    const month = monthNames[date.getUTCMonth()];
-    const year = date.getUTCFullYear();
-    return `${day} ${dayNum}${suffix(dayNum)} ${month} ${year}`;
-}
-
-function formatShortDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-GB", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-    }); // e.g. "Wed 6 Aug"
-}
 
 export async function mealsPivotHandler(req, res) {
-    try {
-        const { eventName, data } = req.body;
-        if (!eventName || !Array.isArray(data)) {
-            return res.status(400).json({ error: "Missing eventName or data" });
-        }
+  try {
+    const { eventName = "Event", slots = [], data = [] } = req.body;
 
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Meals Pivot");
-
-        // Title row
-        worksheet.getCell("A1").value = eventName;
-        worksheet.getCell("A1").font = { bold: true, size: 14 };
-
-        // Generation date row
-        const generatedDate = formatLongDate(new Date());
-        worksheet.getCell("A2").value = `Generated ${generatedDate}`;
-
-        // Blank row
-        worksheet.addRow([]);
-
-        // Header rows
-        const headerRow1 = worksheet.addRow(["Name", "Role"]);
-        const headerRow2 = worksheet.addRow(["", ""]);
-        headerRow1.font = { bold: true };
-        headerRow2.font = { bold: true };
-
-        // Build date → slots map
-        const dateMap = {};
-        for (const entry of data) {
-            const date = entry.Date.split("T")[0];
-            if (!dateMap[date]) dateMap[date] = [];
-
-            ["slot1", "slot2", "slot3", "slot4"].forEach((key) => {
-                const slot = entry[key];
-                const meta = req.body[key];
-                if (slot && meta) {
-                    dateMap[date].push({ key, abb: meta.abb, order: parseInt(key.replace("slot", "")) });
-                }
-            });
-        }
-
-        // Deduplicate & sort by slot order
-        for (const date in dateMap) {
-            dateMap[date] = Array.from(new Map(dateMap[date].map(s => [s.key, s])).values())
-                .sort((a, b) => a.order - b.order);
-        }
-
-        // Column headers
-        let colIndex = 3;
-        const dateKeys = Object.keys(dateMap).sort();
-        for (const date of dateKeys) {
-            const slots = dateMap[date];
-            const startCol = colIndex;
-            const endCol = colIndex + slots.length - 1;
-
-            worksheet.mergeCells(headerRow1.number, startCol, headerRow1.number, endCol);
-            worksheet.getCell(headerRow1.number, startCol).value = formatShortDate(date);
-
-            slots.forEach(({ abb }, i) => {
-                headerRow2.getCell(colIndex + i).value = abb;
-            });
-
-            colIndex += slots.length;
-        }
-
-        // Write data rows (grouped by name+role)
-        const dataStartRow = worksheet.lastRow.number + 1;
-
-        // Group data by name+role
-        const groupedData = {};
-        for (const entry of data) {
-            const personKey = `${entry.name}||${entry.role || ""}`;
-            if (!groupedData[personKey]) {
-                groupedData[personKey] = { name: entry.name, role: entry.role || "", dates: {} };
-            }
-            const date = entry.Date.split("T")[0];
-            if (!groupedData[personKey].dates[date]) {
-                groupedData[personKey].dates[date] = {};
-            }
-            ["slot1", "slot2", "slot3", "slot4"].forEach((key) => {
-                if (entry[key]?.qty) {
-                    groupedData[personKey].dates[date][key] = (groupedData[personKey].dates[date][key] || 0) + entry[key].qty;
-                }
-            });
-        }
-
-        // Write grouped rows
-        for (const personKey in groupedData) {
-            const person = groupedData[personKey];
-            const rowValues = [person.name, person.role];
-            for (const date of dateKeys) {
-                const slots = dateMap[date];
-                slots.forEach(({ key }) => {
-                    const qty = person.dates[date]?.[key] || 0;
-                    rowValues.push(qty || "");
-                });
-            }
-            worksheet.addRow(rowValues);
-        }
-
-        // Totals row with formulas
-        const totalsRowValues = ["TOTAL", ""];
-        for (let i = 0; i < colIndex - 3; i++) {
-            const colLetter = worksheet.getColumn(i + 3).letter;
-            totalsRowValues.push({ formula: `SUM(${colLetter}${dataStartRow}:${colLetter}${worksheet.lastRow.number})` });
-        }
-        const totalsRow = worksheet.addRow(totalsRowValues);
-        totalsRow.font = { bold: true };
-
-        // Center align all cells except A and B
-        worksheet.eachRow((row) => {
-            row.eachCell((cell, colNumber) => {
-                if (colNumber > 2) {
-                    cell.alignment = { vertical: "middle", horizontal: "center" };
-                }
-            });
-        });
-
-        // Column widths
-        worksheet.columns.forEach((col, i) => {
-            col.width = i < 2 ? 15 : 6;
-        });
-
-        // Add borders
-        const firstDataRow = headerRow1.number;
-        const lastRow = totalsRow.number;
-        const firstMealCol = 3;
-        const lastCol = colIndex - 1;
-
-        worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                if (
-                    rowNumber >= firstDataRow &&
-                    rowNumber <= lastRow &&
-                    colNumber >= 1 &&
-                    colNumber <= lastCol
-                ) {
-                    cell.border = {
-                        top: rowNumber === firstDataRow + 1 ? { style: "thin" } : cell.border?.top,
-                        bottom: rowNumber === lastRow ? { style: "thin" } : cell.border?.bottom,
-                        left: colNumber === 1 || colNumber === firstMealCol ? { style: "thin" } : cell.border?.left,
-                        right: colNumber === lastCol ? { style: "thin" } : cell.border?.right,
-                    };
-                }
-            });
-        });
-
-        // Upload to Firebase Storage
-        const storage = getStorage();
-        const bucket = storage.bucket();
-
-        const fileName = `pivots/${eventName.replace(/\s+/g, "_")}_pivot_${generatedDate.replace(/\s+/g, "_")}.xlsx`;
-        const file = bucket.file(fileName);
-        const buffer = await workbook.xlsx.writeBuffer();
-        const token = uuidv4();
-
-        await file.save(buffer, {
-            metadata: {
-                contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                metadata: { firebaseStorageDownloadTokens: token },
-            },
-        });
-
-        const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media&token=${token}`;
-        return res.json({ url });
-
-    } catch (err) {
-        console.error("❌ mealsPivotHandler error:", err);
-        return res.status(500).json({ error: "Failed to generate pivot" });
+    if (!Array.isArray(slots) || !Array.isArray(data)) {
+      return res.status(400).json({ error: "Invalid or missing 'slots' or 'data'" });
     }
+
+    const sortedSlots = [...slots].sort((a, b) => a.slot - b.slot);
+
+    // Map slot keys to abbreviations (e.g., slot1 -> B)
+    const slotMap = new Map();
+    for (const { slot, abb } of sortedSlots) {
+      slotMap.set(`slot${slot}`, abb);
+    }
+
+    const allDates = [...new Set(data.map(d => d.Date))].sort();
+
+    // Build pivot structure
+    const pivot = {};
+    for (const row of data) {
+      const name = row.name || "Unknown";
+      const role = row.role || "";
+      const key = `${name}__${role}`;
+      const date = row.Date;
+
+      if (!pivot[key]) pivot[key] = {};
+      if (!pivot[key][date]) pivot[key][date] = {};
+
+      for (const [slotKey, abb] of slotMap.entries()) {
+        const qty = row[slotKey]?.qty;
+        if (qty) {
+          pivot[key][date][abb] = qty;
+        }
+      }
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Meals");
+
+    // Add title and generation date
+    sheet.addRow([eventName]);
+    sheet.addRow([`Generated ${format(new Date(), "EEEE d MMM yyyy")}`]);
+    sheet.addRow([]); // Spacer
+
+    // Header Rows
+    const dummyDateHeader = ["Name", "Role"]; // Not used for data insertion
+    const slotHeader = ["", ""];
+
+    let currentCol = 3;
+    for (const date of allDates) {
+      const formattedDate = format(parseISO(date), "EEE d MMM");
+      const slotCount = sortedSlots.length;
+      const start = currentCol;
+      const end = currentCol + slotCount - 1;
+
+      // ✅ Merge header range and set visible label
+      sheet.mergeCells(4, start, 4, end);
+      sheet.getCell(4, start).value = formattedDate;
+
+      // Row 5: meal abbreviations
+      for (const { abb } of sortedSlots) {
+        slotHeader.push(abb);
+      }
+
+      currentCol += slotCount;
+    }
+
+    // Row 4 already set manually, Row 5 is slot header
+    sheet.addRow(dummyDateHeader); // Row 4 placeholder for alignment
+    const slotHeaderRow = sheet.addRow(slotHeader); // Row 5
+
+    slotHeaderRow.font = { bold: true };
+    slotHeaderRow.alignment = { vertical: "middle", horizontal: "center" };
+
+    // Data rows start from row 6
+    for (const [key, dateData] of Object.entries(pivot)) {
+      const [name, role] = key.split("__");
+      const row = [name, role];
+
+      for (const date of allDates) {
+        const meals = dateData[date] || {};
+        for (const { abb } of sortedSlots) {
+          row.push(meals[abb] || "");
+        }
+      }
+
+      sheet.addRow(row);
+    }
+
+    // Set column widths
+    sheet.columns.forEach((col, idx) => {
+      col.width = idx < 2 ? 20 : 6;
+    });
+
+    // Save to temp file
+    const fileName = `${eventName}_Catering.xlsx`;
+    const filePath = join(tmpdir(), fileName);
+    await workbook.xlsx.writeFile(filePath);
+
+    // Upload to Firebase Storage and make public
+    const bucket = getStorage().bucket();
+    const destPath = `meals/${fileName}`;
+    await bucket.upload(filePath, {
+      destination: destPath,
+      metadata: {
+        contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      }
+    });
+    await bucket.file(destPath).makePublic();
+
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destPath}`;
+    return res.json({ status: "success", fileUrl: publicUrl });
+
+  } catch (err) {
+    console.error("❌ Error in mealsPivotHandler:", err);
+    return res.status(500).json({ error: "Server error", details: err.message });
+  }
 }

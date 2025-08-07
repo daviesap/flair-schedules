@@ -9,11 +9,14 @@
   },
   "dependencies": {
     "@glideapps/tables": "^1.0.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "exceljs": "^4.4.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.4.0",
     "luxon": "^3.0.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "write-excel-file": "^2.3.4"
   },
   "devDependencies": {
     "eslint": "^8.0.0"
