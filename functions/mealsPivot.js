@@ -105,6 +105,12 @@ export async function mealsPivotHandler(req, res) {
     const slotRowRef = sheet.addRow(slotRow);
     slotRowRef.font = { bold: true };
     slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
+    // Add thin bottom border below row 5
+    slotRowRef.eachCell((cell) => {
+      cell.border = {
+        bottom: { style: 'thin', color: { argb: 'FF000000' } }
+      };
+    });
 
     // Row 6+: Data rows
     for (const [key, dateData] of Object.entries(pivot)) {
@@ -154,16 +160,6 @@ export async function mealsPivotHandler(req, res) {
     // Define dataStartCol and dataEndCol before use
     const dataStartCol = 1; // Column A
     const dataEndCol = sheet.columnCount;
-
-    // Thin border below row 5
-    const slotBorderRow = sheet.getRow(5);
-    for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
-      const cell = slotBorderRow.getCell(colNum);
-      cell.border = {
-        ...cell.border,
-        bottom: { style: 'thin', color: { argb: 'FF000000' } }
-      };
-    }
 
     // Apply thick black border around the entire data block
     const dataStartRow = 4; // Row with headers

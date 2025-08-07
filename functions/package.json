@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint . --ext .js,.mjs",
-    "deploy:all": "firebase deploy --only functions --project flair-schedules"
+    "deploy:all": "firebase deploy --only functions --project flair-schedules",
+    "serve": "node serve.js"
   },
   "dependencies": {
     "@glideapps/tables": "^1.0.0",
