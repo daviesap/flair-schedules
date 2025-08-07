@@ -151,8 +151,50 @@ export async function mealsPivotHandler(req, res) {
     });
 
 
+    // Define dataStartCol and dataEndCol before use
+    const dataStartCol = 1; // Column A
+    const dataEndCol = sheet.columnCount;
+
+    // Thin border below row 5
+    const slotBorderRow = sheet.getRow(5);
+    for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
+      const cell = slotBorderRow.getCell(colNum);
+      cell.border = {
+        ...cell.border,
+        bottom: { style: 'thin', color: { argb: 'FF000000' } }
+      };
+    }
+
+    // Apply thick black border around the entire data block
+    const dataStartRow = 4; // Row with headers
+    const dataEndRow = sheet.lastRow.number; // Includes totals
+
+    for (let rowNum = dataStartRow; rowNum <= dataEndRow; rowNum++) {
+      const row = sheet.getRow(rowNum);
+      for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
+        const cell = row.getCell(colNum);
+        const border = {};
+        if (rowNum === dataStartRow) border.top = { style: 'medium', color: { argb: 'FF000000' } };
+        if (rowNum === dataEndRow) border.bottom = { style: 'medium', color: { argb: 'FF000000' } };
+        if (colNum === dataStartCol) border.left = { style: 'medium', color: { argb: 'FF000000' } };
+        if (colNum === dataEndCol) border.right = { style: 'medium', color: { argb: 'FF000000' } };
+        cell.border = border;
+      }
+      // Thin border above total row
+      if (rowNum === dataEndRow) {
+        const totalBorderRow = sheet.getRow(dataEndRow);
+        for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
+          const cell = totalBorderRow.getCell(colNum);
+          cell.border = {
+            ...cell.border,
+            top: { style: 'thin', color: { argb: 'FF000000' } }
+          };
+        }
+      }
+    }
+
     // Save to temp file
-    const fileName = `${eventName}_Catering.xlsx`;
+    const fileName = `${eventName}_Catering_${Date.now()}.xlsx`;
     const filePath = join(tmpdir(), fileName);
     await workbook.xlsx.writeFile(filePath);
 
