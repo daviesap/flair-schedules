@@ -49,14 +49,18 @@ export async function mealsPivotHandler(req, res) {
     const titleRow = sheet.addRow([eventName]);
     titleRow.font = { bold: true };
 
-    // Row 2: Generated timestamp
-    const generatedAt = format(new Date(), "EEEE d MMM yyyy, h:mm a");
-    sheet.addRow([`Generated ${generatedAt}`]);
+    // New Row 2: Catering Grid
+    sheet.addRow(["Catering Grid"]);
 
-    // Row 3: Spacer
+    // Row 3: Generated timestamp (bold)
+    const generatedAt = format(new Date(), "EEEE d MMM yyyy, h:mm a");
+    const generatedRow = sheet.addRow([`Generated ${generatedAt}`]);
+    generatedRow.font = { bold: true };
+
+    // Row 4: Spacer
     sheet.addRow([]);
 
-    // Row 4: Name + Role + merged date cells
+    // Row 5: Name + Role + merged date cells
     const headerRow = ["Name", "Role"];
     const mergeRanges = [];
 
@@ -77,8 +81,8 @@ export async function mealsPivotHandler(req, res) {
       currentCol += slotCount;
     }
 
-    // Manually populate row 4 so it stays at the expected position
-    const headerRowNumber = 4;
+    // Manually populate row 5 so it stays at the expected position
+    const headerRowNumber = 5;
     headerRow.forEach((value, index) => {
       const cell = sheet.getCell(headerRowNumber, index + 1);
       cell.value = value;
@@ -88,13 +92,13 @@ export async function mealsPivotHandler(req, res) {
 
     // Merge the date columns
     mergeRanges.forEach(({ start, end }) => {
-      sheet.mergeCells(4, start, 4, end);
-      const cell = sheet.getCell(4, start);
+      sheet.mergeCells(5, start, 5, end);
+      const cell = sheet.getCell(5, start);
       cell.alignment = { horizontal: "center", vertical: "middle" };
       cell.font = { bold: true };
     });
 
-    // Row 5: Meal abbreviations
+    // Row 6: Meal abbreviations
     const slotRow = ["", ""];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) {
@@ -105,14 +109,8 @@ export async function mealsPivotHandler(req, res) {
     const slotRowRef = sheet.addRow(slotRow);
     slotRowRef.font = { bold: true };
     slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
-    // Add thin bottom border below row 5
-    slotRowRef.eachCell((cell) => {
-      cell.border = {
-        bottom: { style: 'thin', color: { argb: 'FF000000' } }
-      };
-    });
 
-    // Row 6+: Data rows
+    // Row 7+: Data rows
     for (const [key, dateData] of Object.entries(pivot)) {
       const [name, role] = key.split("__");
       const row = [name, role];
@@ -136,7 +134,7 @@ export async function mealsPivotHandler(req, res) {
     totalRow.getCell(2).value = "";
     totalRow.getCell(2).alignment = { vertical: "middle" };
 
-    const startRow = 6; // First row of data
+    const startRow = 7; // First row of data
     const endRow = sheet.lastRow.number - 1; // Last data row before total
     const colCount = sheet.columnCount;
 
@@ -149,6 +147,90 @@ export async function mealsPivotHandler(req, res) {
 
     totalRow.commit();
 
+    // Center-align all data and total cells except for columns A and B
+    for (let rowNum = 7; rowNum <= sheet.lastRow.number; rowNum++) {
+      const row = sheet.getRow(rowNum);
+      for (let col = 3; col <= sheet.columnCount; col++) {
+        const cell = row.getCell(col);
+        cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle' };
+      }
+    }
+
+    // Borders: horizontal below row 6 and below last data row, and vertical left borders for slot groupings
+    // Get last data row (before totals)
+    const lastDataRow = sheet.lastRow.number - 1;
+    // Horizontal border below row 6 (meal abbreviations)
+    const borderStyle = { style: 'thin', color: { argb: 'FF000000' } };
+    // Below row 6
+    const mealAbbRowNum = 6;
+    const mealAbbRow = sheet.getRow(mealAbbRowNum);
+    for (let col = 1; col <= sheet.columnCount; col++) {
+      mealAbbRow.getCell(col).border = {
+        ...(mealAbbRow.getCell(col).border || {}),
+        bottom: borderStyle
+      };
+    }
+    // Below last data row (just above totals)
+    const lastDataRowObj = sheet.getRow(lastDataRow);
+    for (let col = 1; col <= sheet.columnCount; col++) {
+      lastDataRowObj.getCell(col).border = {
+        ...(lastDataRowObj.getCell(col).border || {}),
+        bottom: borderStyle
+      };
+    }
+
+    // Vertical left borders for each slot grouping
+    // Slot groupings start at column 3 (C), then every (number of slots) columns after
+    const slotCount = sortedSlots.length;
+    const totalDates = allDates.length;
+    const slotStartCols = [];
+    let colIdx = 3;
+    for (let i = 0; i < totalDates; i++) {
+      slotStartCols.push(colIdx);
+      colIdx += slotCount;
+    }
+    // For each group start col, apply left border from row 5 to totals row
+    const firstRowWithSlots = 5;
+    const lastRowWithTotals = sheet.lastRow.number;
+    for (const slotCol of slotStartCols) {
+      for (let rowNum = firstRowWithSlots; rowNum <= lastRowWithTotals; rowNum++) {
+        const cell = sheet.getRow(rowNum).getCell(slotCol);
+        cell.border = {
+          ...(cell.border || {}),
+          left: borderStyle
+        };
+      }
+    }
+
+    // Outer medium border around full table
+    const outerBorderStyle = { style: 'medium', color: { argb: 'FF000000' } };
+    const topRow = 5;
+    const bottomRow = sheet.lastRow.number;
+    const leftCol = 1;
+    const rightCol = sheet.columnCount;
+
+    for (let col = leftCol; col <= rightCol; col++) {
+      sheet.getRow(topRow).getCell(col).border = {
+        ...(sheet.getRow(topRow).getCell(col).border || {}),
+        top: outerBorderStyle
+      };
+      sheet.getRow(bottomRow).getCell(col).border = {
+        ...(sheet.getRow(bottomRow).getCell(col).border || {}),
+        bottom: outerBorderStyle
+      };
+    }
+
+    for (let row = topRow; row <= bottomRow; row++) {
+      sheet.getRow(row).getCell(leftCol).border = {
+        ...(sheet.getRow(row).getCell(leftCol).border || {}),
+        left: outerBorderStyle
+      };
+      sheet.getRow(row).getCell(rightCol).border = {
+        ...(sheet.getRow(row).getCell(rightCol).border || {}),
+        right: outerBorderStyle
+      };
+    }
+
     // Set column widths:
     // - The first two columns ("Name" and "Role") are made wider (20 units) to accommodate longer text.
     // - All other columns (meal abbreviations) are narrower (4 units) since they only hold small numeric values.
@@ -157,56 +239,40 @@ export async function mealsPivotHandler(req, res) {
     });
 
 
-    // Define dataStartCol and dataEndCol before use
-    const dataStartCol = 1; // Column A
-    const dataEndCol = sheet.columnCount;
-
-    // Apply thick black border around the entire data block
-    const dataStartRow = 4; // Row with headers
-    const dataEndRow = sheet.lastRow.number; // Includes totals
-
-    for (let rowNum = dataStartRow; rowNum <= dataEndRow; rowNum++) {
-      const row = sheet.getRow(rowNum);
-      for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
-        const cell = row.getCell(colNum);
-        const border = {};
-        if (rowNum === dataStartRow) border.top = { style: 'medium', color: { argb: 'FF000000' } };
-        if (rowNum === dataEndRow) border.bottom = { style: 'medium', color: { argb: 'FF000000' } };
-        if (colNum === dataStartCol) border.left = { style: 'medium', color: { argb: 'FF000000' } };
-        if (colNum === dataEndCol) border.right = { style: 'medium', color: { argb: 'FF000000' } };
-        cell.border = border;
-      }
-      // Thin border above total row
-      if (rowNum === dataEndRow) {
-        const totalBorderRow = sheet.getRow(dataEndRow);
-        for (let colNum = dataStartCol; colNum <= dataEndCol; colNum++) {
-          const cell = totalBorderRow.getCell(colNum);
-          cell.border = {
-            ...cell.border,
-            top: { style: 'thin', color: { argb: 'FF000000' } }
-          };
-        }
-      }
-    }
-
     // Save to temp file
     const fileName = `${eventName}_Catering_${Date.now()}.xlsx`;
     const filePath = join(tmpdir(), fileName);
-    await workbook.xlsx.writeFile(filePath);
 
-    // Upload to Firebase Storage and make public
-    const bucket = getStorage().bucket();
-    const destPath = `meals/${fileName}`;
-    await bucket.upload(filePath, {
-      destination: destPath,
-      metadata: {
-        contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    const isRunningLocally = process.env.FUNCTIONS_EMULATOR === 'true';
+
+    if (isRunningLocally) {
+      const fs = await import('fs');
+      const localDir = '/Users/apndavies/Coding/Flair Schedules/output';
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir);
       }
-    });
-    await bucket.file(destPath).makePublic();
+      const localPath = `${localDir}/${fileName}`;
+      await workbook.xlsx.writeFile(localPath);
+      console.log(`✅ File saved locally at ${localPath}`);
+      return res.json({ status: "success", localPath });
+    } else {
+      // Save to temp file
+      await workbook.xlsx.writeFile(filePath);
 
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destPath}`;
-    return res.json({ status: "success", fileUrl: publicUrl });
+      // Upload to Firebase Storage and make public
+      const bucket = getStorage().bucket();
+      const destPath = `meals/${fileName}`;
+      await bucket.upload(filePath, {
+        destination: destPath,
+        metadata: {
+          contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }
+      });
+      await bucket.file(destPath).makePublic();
+
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destPath}`;
+      return res.json({ status: "success", fileUrl: publicUrl });
+    }
 
   } catch (err) {
     console.error("❌ Error in mealsPivotHandler:", err);
