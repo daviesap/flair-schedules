@@ -1,0 +1,201 @@
+{
+  "eventName": "Maui",
+  "slots": [
+    {
+      "slot": 1,
+      "name": "Breakfast",
+      "abb": "B",
+      "location": "Room 1"
+    },
+    {
+      "slot": 2,
+      "name": "Lunch",
+      "abb": "L",
+      "location": "Room 2"
+    },
+    {
+      "slot": 3,
+      "name": "Dinner",
+      "abb": "D",
+      "location": "Room 3"
+    },
+    {
+      "slot": 4,
+      "name": "Overnight",
+      "abb": "O",
+      "location": "Room 4"
+    },
+    {
+      "slot": 5,
+      "name": "Tea / Coffee",
+      "abb": "TC",
+      "location": "Room 5"
+    }
+  ],
+  "data": [
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "name": "AVS",
+      "slot1": 20
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "name": "Bob Brown",
+      "role": "Audio",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "name": "Bob Brown",
+      "role": "Audio",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "name": "Bob Brown",
+      "role": "Audio",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "name": "Bob Brown",
+      "role": "Audio",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "name": "Mia Brown",
+      "role": "Carpenter",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "slot1": 1
+    }
+  ]
+}
