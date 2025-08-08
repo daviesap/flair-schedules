@@ -161,6 +161,7 @@ export async function mealsPivotHandler(req, res) {
     const lastDataRow = sheet.lastRow.number - 1;
     // Horizontal border below row 6 (meal abbreviations)
     const borderStyle = { style: 'thin', color: { argb: 'FF000000' } };
+    const keyBorderStyle = { style: 'medium', color: { argb: 'FF000000' } };
     // Below row 6
     const mealAbbRowNum = 6;
     const mealAbbRow = sheet.getRow(mealAbbRowNum);
@@ -237,6 +238,90 @@ export async function mealsPivotHandler(req, res) {
     sheet.columns.forEach((col, idx) => {
       col.width = idx < 2 ? 20 : 3;
     });
+
+
+    // Add key table below totals
+    const keyStartRow = sheet.lastRow.number + 2;
+    sheet.getRow(keyStartRow).getCell(1).value = "Key";
+    sheet.getRow(keyStartRow).getCell(1).font = { bold: true };
+    // Add light grey background to all 12 key title cells
+    for (let col = 1; col <= 12; col++) {
+      sheet.getRow(keyStartRow).getCell(col).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFEFEFEF' }
+      };
+    }
+
+    // Header for key
+    const keyHeaderRow = sheet.getRow(keyStartRow + 1);
+    keyHeaderRow.getCell(1).value = "Meal";
+    keyHeaderRow.getCell(2).value = "Abbreviation";
+    keyHeaderRow.getCell(3).value = "Location";
+
+    keyHeaderRow.getCell(1).font = { italic: true };
+    keyHeaderRow.getCell(2).font = { italic: true };
+    keyHeaderRow.getCell(3).font = { italic: true };
+    // Add light grey background to all 12 header cells
+    for (let col = 1; col <= 12; col++) {
+      keyHeaderRow.getCell(col).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFEFEFEF' }
+      };
+    }
+
+    // Data for key
+    sortedSlots.forEach((slot, index) => {
+      const row = sheet.getRow(keyStartRow + 2 + index);
+
+      const mealCell = row.getCell(1);
+      const abbCell = row.getCell(2);
+      const locationCell = row.getCell(3);
+
+      mealCell.value = slot.name;
+      abbCell.value = slot.abb;
+      locationCell.value = slot.location;
+
+      // Apply light grey background
+      [mealCell, abbCell, locationCell].forEach(cell => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFEFEFEF' }
+        };
+      });
+
+      sheet.mergeCells(keyStartRow + 2 + index, 3, keyStartRow + 2 + index, 12);
+    });
+
+    // Apply medium border around the key table
+    const keyTopRow = keyStartRow;
+    const keyBottomRow = keyStartRow + 1 + sortedSlots.length;
+    const keyLeftCol = 1;
+    const keyRightCol = 12;
+
+    for (let col = keyLeftCol; col <= keyRightCol; col++) {
+      sheet.getRow(keyTopRow).getCell(col).border = {
+        ...(sheet.getRow(keyTopRow).getCell(col).border || {}),
+        top: keyBorderStyle
+      };
+      sheet.getRow(keyBottomRow).getCell(col).border = {
+        ...(sheet.getRow(keyBottomRow).getCell(col).border || {}),
+        bottom: keyBorderStyle
+      };
+    }
+
+    for (let row = keyTopRow; row <= keyBottomRow; row++) {
+      sheet.getRow(row).getCell(keyLeftCol).border = {
+        ...(sheet.getRow(row).getCell(keyLeftCol).border || {}),
+        left: keyBorderStyle
+      };
+      sheet.getRow(row).getCell(keyRightCol).border = {
+        ...(sheet.getRow(row).getCell(keyRightCol).border || {}),
+        right: keyBorderStyle
+      };
+    }
 
 
     // Save to temp file
