@@ -35,7 +35,7 @@ export async function mealsPivotHandler(req, res) {
       if (!pivot[key][date]) pivot[key][date] = {};
 
       for (const [slotKey, abb] of slotMap.entries()) {
-        const qty = row[slotKey]?.qty;
+        const qty = row[slotKey];
         if (qty) {
           pivot[key][date][abb] = qty;
         }
