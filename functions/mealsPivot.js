@@ -5,6 +5,12 @@ import ExcelJS from "exceljs";
 import { parseISO, format } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
 
+const greyFill = {
+  type: 'pattern',
+  pattern: 'solid',
+  fgColor: { argb: 'FFEFEFEF' }
+};
+
 export async function mealsPivotHandler(req, res) {
   try {
     const { eventName = "Event", slots = [], data = [] } = req.body;
@@ -245,12 +251,9 @@ export async function mealsPivotHandler(req, res) {
     sheet.getRow(keyStartRow).getCell(1).value = "Key";
     sheet.getRow(keyStartRow).getCell(1).font = { bold: true };
     // Add light grey background to all 12 key title cells
+    const keyTitleRowObj = sheet.getRow(keyStartRow);
     for (let col = 1; col <= 12; col++) {
-      sheet.getRow(keyStartRow).getCell(col).fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFEFEFEF' }
-      };
+      keyTitleRowObj.getCell(col).fill = greyFill;
     }
 
     // Header for key
@@ -264,11 +267,7 @@ export async function mealsPivotHandler(req, res) {
     keyHeaderRow.getCell(3).font = { italic: true };
     // Add light grey background to all 12 header cells
     for (let col = 1; col <= 12; col++) {
-      keyHeaderRow.getCell(col).fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFEFEFEF' }
-      };
+      keyHeaderRow.getCell(col).fill = greyFill;
     }
 
     // Data for key
@@ -285,11 +284,7 @@ export async function mealsPivotHandler(req, res) {
 
       // Apply light grey background
       [mealCell, abbCell, locationCell].forEach(cell => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FFEFEFEF' }
-        };
+        cell.fill = greyFill;
       });
 
       sheet.mergeCells(keyStartRow + 2 + index, 3, keyStartRow + 2 + index, 12);
