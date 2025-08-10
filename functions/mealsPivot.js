@@ -3,7 +3,7 @@ import { tmpdir } from "os";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import ExcelJS from "exceljs";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, addDays } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,13 +20,23 @@ const greyFill = {
 
 export async function mealsPivotHandler(req, res) {
   try {
-    const { eventName = "Event", slots = [], names = [], tags = [], data = [] } = req.body;
+    const { eventName = "Event", startDate, endDate, slots = [], names = [], tags = [], data = [] } = req.body;
 
     if (!Array.isArray(slots) || !Array.isArray(data)) {
       return res.status(400).json({ error: "Invalid or missing 'slots' or 'data'" });
     }
     if (!Array.isArray(names) || !Array.isArray(tags)) {
       return res.status(400).json({ error: "Invalid or missing 'names' or 'tags'" });
+    }
+
+    // Require explicit start and end dates (inclusive)
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: "Missing 'startDate' or 'endDate' in payload" });
+    }
+    const startDateObj = parseISO(startDate);
+    const endDateObj = parseISO(endDate);
+    if (isNaN(startDateObj) || isNaN(endDateObj) || startDateObj > endDateObj) {
+      return res.status(400).json({ error: "Invalid 'startDate'/'endDate' – must be valid ISO dates and start <= end" });
     }
 
     const sortedSlots = [...slots].sort((a, b) => a.slot - b.slot);
@@ -57,7 +67,12 @@ export async function mealsPivotHandler(req, res) {
     }
     const allPersonIds = Array.from(peopleMap.keys());
 
-    const allDates = [...new Set(data.map(d => d.Date))].sort();
+    // Build a continuous list of dates from the provided startDate to endDate (inclusive)
+    const allDates = [];
+    for (let cursor = startDateObj; cursor <= endDateObj; cursor = addDays(cursor, 1)) {
+      // Keep as ISO strings like the input (normalized to UTC midnight timestamps)
+      allDates.push(new Date(cursor.getTime()).toISOString());
+    }
 
     // Build pivot: personId -> date -> { abb: qty }
     const pivot = {};

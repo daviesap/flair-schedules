@@ -1,5 +1,5 @@
 To run local server :
-cd /Users/apndavies/Coding/Flair Schedules/flair-schedules
+cd "/Users/apndavies/Coding/Flair Schedules/flair-schedules"
 firebase emulators:start --only functions
 
 To run curl
