@@ -238,22 +238,18 @@ export async function mealsPivotHandler(req, res) {
 
     const writeSection = (title, ids) => {
       if (ids.length === 0) return;
-      // Section header row
-      const sectionRowIdx = sheet.lastRow.number + 1;
-      const totalCols = sheet.columnCount || (2 + allDates.length * sortedSlots.length + 1);
-      // Create an empty row then merge across all columns to place the title
-      //const r = sheet.addRow([]);
-      sheet.mergeCells(sectionRowIdx, 1, sectionRowIdx, totalCols);
-      const scell = sheet.getCell(sectionRowIdx, 1);
-      scell.value = title;
-      scell.font = { bold: true };
-      scell.alignment = { horizontal: 'left', vertical: 'middle' };
-      // Ensure all cells in the merged header row are left-aligned (Excel may render per-cell alignment)
-      for (let c = 1; c <= totalCols; c++) {
-        sheet.getRow(sectionRowIdx).getCell(c).alignment = { horizontal: 'left', vertical: 'middle' };
+      // Section header row (single cell in column A, no merges)
+      const sectionRow = sheet.addRow([title]);
+      sectionRow.getCell(1).font = { bold: true };
+      sectionRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+      // ensure the rest of the row has empty cells so borders apply uniformly later
+      for (let c = 2; c <= sheet.columnCount; c++) {
+        const cell = sectionRow.getCell(c);
+        if (cell.value === undefined) cell.value = '';
+        cell.alignment = { horizontal: 'left', vertical: 'middle' };
       }
       // Remember this row so we don't re-center it later
-      sectionHeaderRows.push(sectionRowIdx);
+      sectionHeaderRows.push(sectionRow.number);
 
       // Person rows
       for (const pid of ids) {
@@ -342,7 +338,7 @@ export async function mealsPivotHandler(req, res) {
       colIdx += slotCount;
     }
     // For each group start col, apply left border from row 5 to totals row
-    const firstRowWithSlots = 4; // start below row 3 as requested previously
+    const firstRowWithSlots = 5; // start at the date header row to avoid protruding borders above dates
     const lastRowWithTotals = sheet.lastRow.number;
     for (const slotCol of slotStartCols) {
       for (let rowNum = firstRowWithSlots; rowNum <= lastRowWithTotals; rowNum++) {
