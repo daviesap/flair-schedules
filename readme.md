@@ -68,3 +68,31 @@ git push origin main
 #If you want to delete the branch after merging (optional):
 git branch -d change_date_format           # deletes locally
 git push origin --delete change_date_format  # deletes on GitHub
+
+# Before starting:
+# ✅ Make sure all your changes on NEW_BRANCH are committed.
+#    Run `git status` — it should say "nothing to commit, working tree clean".
+
+# 1) Update local refs from GitHub
+git fetch origin
+
+# 2) Move your branch on top of the latest main
+git checkout NEW_BRANCH
+git rebase origin/main
+# If there are conflicts:
+#   - fix files, then:
+#       git add <file>    # for each resolved file
+#       git rebase --continue
+#   - to bail out completely: git rebase --abort
+
+# 3) Switch to main and fast-forward merge
+git checkout main
+git pull origin main
+git merge --ff-only NEW_BRANCH
+
+# 4) Push the updated main to GitHub
+git push origin main
+
+# 5) (Optional) Delete the branch
+git branch -d NEW_BRANCH
+git push origin --delete NEW_BRANCH
