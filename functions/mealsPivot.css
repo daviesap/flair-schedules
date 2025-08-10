@@ -56,20 +56,21 @@ th {
   background-color: #4CAF50;
   color: white;
   font-weight: bold;
-  text-align: center;
 }
 
-td {
+/* Center text in table cells inside .table-wrap only */
+.table-wrap th,
+.table-wrap td {
   text-align: center;
 }
 
 /* --- Placeholder rules for new semantic classes --- */
 .group-header {
-  color: black;
+  color: white;
 }
 
 .slot-header {
-  color: black;
+  color: white;
 }
 
 .meal-number {
@@ -82,12 +83,28 @@ td {
 
 .key-table {
   color: black;
+  text-align: left;
 }
 
 .key-title {
   color: black;
+  text-align: left;
 }
 
 .key-header {
   color: black;
+  text-align: left;
+}
+
+/* --- Key table overrides --- */
+/* Force the Key table cells to be left-aligned */
+table.key th,
+table.key td {
+  text-align: left;
+}
+
+/* Optional: keep the key table width and centering consistent */
+table.key {
+  width: 80%;
+  margin: 24px auto 0;
 }
