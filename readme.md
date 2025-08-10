@@ -47,3 +47,24 @@ git push
 
 # Pull latest changes from the remote repository
 git pull
+
+
+# Move back from a branch to MAIN
+
+#Make sure everything is commited to the branch first
+
+# 1. Switch to main
+git checkout main
+
+# 2. Make sure main is up to date with GitHub
+git pull origin main
+
+# 3. Merge your branch into main
+git merge change_date_format
+
+# 4. Push the updated main back to GitHub
+git push origin main
+
+#If you want to delete the branch after merging (optional):
+git branch -d change_date_format           # deletes locally
+git push origin --delete change_date_format  # deletes on GitHub
