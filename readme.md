@@ -27,3 +27,23 @@ git fetch -p
 
 # 6. Check again (should be gone)
 git branch -a
+
+
+## Basic Git Commands
+  # Clone a repository
+git clone <repo_url>
+
+# Check the status of your working directory
+git status
+
+# Add all changes in current directory and subdirectories
+git add .
+
+# Commit staged changes with a message
+git commit -m "Your commit message"
+
+# Push committed changes to the remote repository
+git push
+
+# Pull latest changes from the remote repository
+git pull
