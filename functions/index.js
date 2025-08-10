@@ -3,7 +3,7 @@ import { https } from "firebase-functions/v2";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { updateDatesHandler } from "./updateDates.js";
-import { mealsPivotHandler } from "./mealsPivot.js"; // 👈 new import
+import { mealsPivotHandler } from "./pivotTable/mealsPivot.js";
 
 // Initialize Firebase Admin globally
 initializeApp();
