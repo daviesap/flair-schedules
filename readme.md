@@ -8,29 +8,34 @@ curl -X POST "http://127.0.0.1:5001/flair-schedules/europe-west2/FlairScheduleHe
   --data-binary "@test-meals-large.json"
 
 
-## Git cheat sheet 
-  # 1. See all local branches
+
+## Git Cheat Sheet
+
+### Branch Management
+```sh
+# List all local branches
 git branch
 
-# 2. See all remote branches
+# List all remote branches
 git branch -r
 
-# 3. Delete a branch locally
-git branch -d branch_name
-# (use -D instead of -d to force delete if it's not merged)
+# Delete a branch locally (replace NEW_BRANCH with your branch name)
+git branch -d NEW_BRANCH          # deletes locally (safe)
+git branch -D NEW_BRANCH          # force delete locally (not merged)
 
-# 4. Delete a branch remotely (on GitHub)
-git push origin --delete branch_name
+# Delete a branch remotely (on GitHub)
+git push origin --delete NEW_BRANCH
 
-# 5. Remove references to deleted remote branches from your local list
+# Remove references to deleted remote branches from your local list
 git fetch -p
 
-# 6. Check again (should be gone)
+# Show all branches (local and remote)
 git branch -a
+```
 
-
-## Basic Git Commands
-  # Clone a repository
+### Basic Git Commands
+```sh
+# Clone a repository
 git clone <repo_url>
 
 # Check the status of your working directory
@@ -47,52 +52,56 @@ git push
 
 # Pull latest changes from the remote repository
 git pull
+```
 
+## Merging or Rebasing a Feature Branch into Main
 
-# Move back from a branch to MAIN
+> **Note:** Before merging or rebasing, make sure all your changes on `NEW_BRANCH` are committed.  
+> Run `git status` — it should say "nothing to commit, working tree clean".
 
-#Make sure everything is commited to the branch first
-
-# 1. Switch to main
+### Fast-Forward Merge Workflow
+```sh
+# 1. Switch to main branch
 git checkout main
 
 # 2. Make sure main is up to date with GitHub
 git pull origin main
 
-# 3. Merge your branch into main
-git merge change_date_format
+# 3. Merge your feature branch into main (fast-forward if possible)
+git merge --ff-only NEW_BRANCH
 
 # 4. Push the updated main back to GitHub
 git push origin main
+```
 
-#If you want to delete the branch after merging (optional):
-git branch -d change_date_format           # deletes locally
-git push origin --delete change_date_format  # deletes on GitHub
-
-# Before starting:
-# ✅ Make sure all your changes on NEW_BRANCH are committed.
-#    Run `git status` — it should say "nothing to commit, working tree clean".
-
-# 1) Update local refs from GitHub
+### Rebase Workflow (Keeping History Linear)
+```sh
+# 1. Update local refs from GitHub
 git fetch origin
 
-# 2) Move your branch on top of the latest main
+# 2. Move your branch on top of the latest main
 git checkout NEW_BRANCH
 git rebase origin/main
 # If there are conflicts:
-#   - fix files, then:
+#   - Fix files, then:
 #       git add <file>    # for each resolved file
 #       git rebase --continue
-#   - to bail out completely: git rebase --abort
+#   - To bail out completely: git rebase --abort
 
-# 3) Switch to main and fast-forward merge
+# 3. Switch to main and fast-forward merge
 git checkout main
 git pull origin main
 git merge --ff-only NEW_BRANCH
 
-# 4) Push the updated main to GitHub
+# 4. Push the updated main to GitHub
 git push origin main
+```
 
-# 5) (Optional) Delete the branch
+### Deleting a Feature Branch (After Merge)
+```sh
+# Delete branch locally
 git branch -d NEW_BRANCH
+
+# Delete branch remotely (on GitHub)
 git push origin --delete NEW_BRANCH
+```
