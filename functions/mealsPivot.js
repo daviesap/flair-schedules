@@ -20,10 +20,13 @@ const greyFill = {
 
 export async function mealsPivotHandler(req, res) {
   try {
-    const { eventName = "Event", slots = [], data = [] } = req.body;
+    const { eventName = "Event", slots = [], names = [], tags = [], data = [] } = req.body;
 
     if (!Array.isArray(slots) || !Array.isArray(data)) {
       return res.status(400).json({ error: "Invalid or missing 'slots' or 'data'" });
+    }
+    if (!Array.isArray(names) || !Array.isArray(tags)) {
+      return res.status(400).json({ error: "Invalid or missing 'names' or 'tags'" });
     }
 
     const sortedSlots = [...slots].sort((a, b) => a.slot - b.slot);
@@ -34,26 +37,68 @@ export async function mealsPivotHandler(req, res) {
       slotMap.set(`slot${slot}`, abb);
     }
 
+    // Merge people from names and tags into a single directory
+    const people = [...names, ...tags];
+    const peopleMap = new Map();
+    for (const p of people) {
+      if (!p || !p.id) continue;
+      peopleMap.set(p.id, {
+        name: p.name || "Unknown",
+        company: p.company || "",
+        role: p.role || ""
+      });
+    }
+    // Ensure any IDs only present in data are also represented (fallback name to the ID)
+    for (const r of data) {
+      const pid = r?.name; // "name" field carries the person/tag id in the new payload
+      if (pid && !peopleMap.has(pid)) {
+        peopleMap.set(pid, { name: pid, company: "", role: "" });
+      }
+    }
+    const allPersonIds = Array.from(peopleMap.keys());
+
     const allDates = [...new Set(data.map(d => d.Date))].sort();
 
-    // Build pivot structure
+    // Build pivot: personId -> date -> { abb: qty }
     const pivot = {};
+    // Track if a person was ever accommodated=true in the dataset
+    const accommodatedByPerson = new Map();
+
     for (const row of data) {
-      const name = row.name || "Unknown";
-      const role = row.role || "";
-      const key = `${name}__${role}`;
+      const personId = row.name; // in the new JSON this is the person/tag id
+      const person = peopleMap.get(personId) || { name: "Unknown", company: "", role: "" };
       const date = row.Date;
 
-      if (!pivot[key]) pivot[key] = {};
-      if (!pivot[key][date]) pivot[key][date] = {};
+      if (!pivot[personId]) pivot[personId] = {};
+      if (!pivot[personId][date]) pivot[personId][date] = {};
+
+      // mark accommodated if any row says true
+      if (row.accommodated === true) accommodatedByPerson.set(personId, true);
 
       for (const [slotKey, abb] of slotMap.entries()) {
         const qty = row[slotKey];
-        if (qty) {
-          pivot[key][date][abb] = qty;
+        if (typeof qty === 'number' && qty > 0) {
+          pivot[personId][date][abb] = qty;
         }
       }
     }
+
+    // Define section membership
+    const isAccommodated = (pid) => accommodatedByPerson.get(pid) === true;
+
+    // Sort by company, then name, then role (case-insensitive)
+    const cmp = (a, b) => {
+      const A = peopleMap.get(a) || { company: "", name: a, role: "" };
+      const B = peopleMap.get(b) || { company: "", name: b, role: "" };
+      const c1 = (A.company || "").localeCompare(B.company || "", undefined, { sensitivity: 'base' });
+      if (c1 !== 0) return c1;
+      const c2 = (A.name || "").localeCompare(B.name || "", undefined, { sensitivity: 'base' });
+      if (c2 !== 0) return c2;
+      return (A.role || "").localeCompare(B.role || "", undefined, { sensitivity: 'base' });
+    };
+
+    const accommodatedIds = allPersonIds.filter(isAccommodated).sort(cmp);
+    const otherIds = allPersonIds.filter(pid => !isAccommodated(pid)).sort(cmp);
 
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Meals");
@@ -73,11 +118,11 @@ export async function mealsPivotHandler(req, res) {
     // Row 4: Spacer
     sheet.addRow([]);
 
-    // Row 5: Name + Role + merged date cells
-    const headerRow = ["Name", "Role"];
+    // Row 5: Name + Company + Role + merged date cells
+    const headerRow = ["Name", "Company", "Role"];
     const mergeRanges = [];
 
-    let currentCol = 3;
+    let currentCol = 4;
     for (const date of allDates) {
       const formattedDate = format(parseISO(date), "EEE d MMM");
       const slotCount = sortedSlots.length;
@@ -112,7 +157,7 @@ export async function mealsPivotHandler(req, res) {
     });
 
     // Row 6: Meal abbreviations
-    const slotRow = ["", ""];
+    const slotRow = ["", "", ""];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) {
         slotRow.push(abb);
@@ -123,20 +168,45 @@ export async function mealsPivotHandler(req, res) {
     slotRowRef.font = { bold: true };
     slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
 
-    // Row 7+: Data rows
-    for (const [key, dateData] of Object.entries(pivot)) {
-      const [name, role] = key.split("__");
-      const row = [name, role];
+    // Row 7+: Section header + person rows
+    const firstDataRowIndex = sheet.lastRow.number + 1; // should be 7
+    const sectionHeaderRows = [];
 
-      for (const date of allDates) {
-        const meals = dateData[date] || {};
-        for (const { abb } of sortedSlots) {
-          row.push(meals[abb] || "");
-        }
+    const writeSection = (title, ids) => {
+      if (ids.length === 0) return;
+      // Section header row
+      const sectionRowIdx = sheet.lastRow.number + 1;
+      const totalCols = sheet.columnCount || (2 + allDates.length * sortedSlots.length + 1);
+      // Create an empty row then merge across all columns to place the title
+      const r = sheet.addRow([]);
+      sheet.mergeCells(sectionRowIdx, 1, sectionRowIdx, totalCols);
+      const scell = sheet.getCell(sectionRowIdx, 1);
+      scell.value = title;
+      scell.font = { bold: true };
+      scell.alignment = { horizontal: 'left', vertical: 'middle' };
+      // Ensure all cells in the merged header row are left-aligned (Excel may render per-cell alignment)
+      for (let c = 1; c <= totalCols; c++) {
+        sheet.getRow(sectionRowIdx).getCell(c).alignment = { horizontal: 'left', vertical: 'middle' };
       }
+      // Remember this row so we don't re-center it later
+      sectionHeaderRows.push(sectionRowIdx);
 
-      sheet.addRow(row);
-    }
+      // Person rows
+      for (const pid of ids) {
+        const p = peopleMap.get(pid) || { name: pid, company: "", role: "" };
+        const rowVals = [p.name, p.company, p.role];
+        for (const date of allDates) {
+          const meals = (pivot[pid] && pivot[pid][date]) ? pivot[pid][date] : {};
+          for (const { abb } of sortedSlots) {
+            rowVals.push(meals[abb] || "");
+          }
+        }
+        sheet.addRow(rowVals);
+      }
+    };
+
+    writeSection('Accommodated', accommodatedIds);
+    writeSection('Others', otherIds);
 
     // Row for totals
     const lastRowNumber = sheet.lastRow.number + 1;
@@ -146,12 +216,14 @@ export async function mealsPivotHandler(req, res) {
     totalRow.getCell(1).alignment = { vertical: "middle" };
     totalRow.getCell(2).value = "";
     totalRow.getCell(2).alignment = { vertical: "middle" };
+    totalRow.getCell(3).value = "";
+    totalRow.getCell(3).alignment = { vertical: "middle" };
 
     const startRow = 7; // First row of data
     const endRow = sheet.lastRow.number - 1; // Last data row before total
     const colCount = sheet.columnCount;
 
-    for (let col = 3; col <= colCount; col++) {
+    for (let col = 4; col <= colCount; col++) {
       const colLetter = sheet.getColumn(col).letter;
       totalRow.getCell(col).value = { formula: `SUM(${colLetter}${startRow}:${colLetter}${endRow})` };
       totalRow.getCell(col).font = { bold: true };
@@ -160,10 +232,12 @@ export async function mealsPivotHandler(req, res) {
 
     totalRow.commit();
 
-    // Center-align all data and total cells except for columns A and B
+    // Center-align all data and total cells except for columns A, B, C.
+    // Skip section header rows so their merged cells remain left-aligned.
     for (let rowNum = 7; rowNum <= sheet.lastRow.number; rowNum++) {
+      if (sectionHeaderRows.includes(rowNum)) continue;
       const row = sheet.getRow(rowNum);
-      for (let col = 3; col <= sheet.columnCount; col++) {
+      for (let col = 4; col <= sheet.columnCount; col++) {
         const cell = row.getCell(col);
         cell.alignment = { ...cell.alignment, horizontal: 'center', vertical: 'middle' };
       }
@@ -194,17 +268,17 @@ export async function mealsPivotHandler(req, res) {
     }
 
     // Vertical left borders for each slot grouping
-    // Slot groupings start at column 3 (C), then every (number of slots) columns after
+    // Slot groupings start at column 4 (D), then every (number of slots) columns after
     const slotCount = sortedSlots.length;
     const totalDates = allDates.length;
     const slotStartCols = [];
-    let colIdx = 3;
+    let colIdx = 4;
     for (let i = 0; i < totalDates; i++) {
       slotStartCols.push(colIdx);
       colIdx += slotCount;
     }
     // For each group start col, apply left border from row 5 to totals row
-    const firstRowWithSlots = 5;
+    const firstRowWithSlots = 4; // start below row 3 as requested previously
     const lastRowWithTotals = sheet.lastRow.number;
     for (const slotCol of slotStartCols) {
       for (let rowNum = firstRowWithSlots; rowNum <= lastRowWithTotals; rowNum++) {
@@ -246,10 +320,10 @@ export async function mealsPivotHandler(req, res) {
     }
 
     // Set column widths:
-    // - The first two columns ("Name" and "Role") are made wider (20 units) to accommodate longer text.
-    // - All other columns (meal abbreviations) are narrower (4 units) since they only hold small numeric values.
+    // - The first three columns ("Name", "Company", "Role") are made wider (20 units) to accommodate longer text.
+    // - All other columns (meal abbreviations) are narrower (3 units) since they only hold small numeric values.
     sheet.columns.forEach((col, idx) => {
-      col.width = idx < 2 ? 20 : 3;
+      col.width = idx < 3 ? 20 : 3;
     });
 
 
@@ -329,35 +403,46 @@ export async function mealsPivotHandler(req, res) {
     // 1) Friendly date labels
     const dateLabels = allDates.map(d => format(parseISO(d), "EEE d MMM"));
     // 2) Header rows
-    const groupHeaderCells = ['<th class="sticky name">Name</th>','<th class="sticky role">Role</th>'];
+    const groupHeaderCells = ['<th class="sticky name">Name</th>', '<th class="sticky company">Company</th>', '<th class="sticky role">Role</th>'];
     for (const lbl of dateLabels) {
       groupHeaderCells.push(`<th class="group" colspan="${sortedSlots.length}">${esc(lbl)}</th>`);
     }
-    const slotHeaderCells = ['<th></th>','<th></th>'];
+    const slotHeaderCells = ['<th></th>','<th></th>','<th></th>'];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot">${esc(abb)}</th>`);
     }
     // 3) Body rows
     const bodyRows = [];
-    for (const [key, dateData] of Object.entries(pivot)) {
-      const [name, role] = key.split("__");
-      const cells = [`<td class="left">${esc(name)}</td>`, `<td class="left">${esc(role)}</td>`];
-      for (const date of allDates) {
-        const meals = dateData[date] || {};
-        for (const { abb } of sortedSlots) {
-          const v = meals[abb] ?? '';
-          cells.push(`<td class="num">${esc(v)}</td>`);
+    const renderPeople = (title, ids) => {
+      if (ids.length === 0) return;
+      const colspan = 3 + (allDates.length * sortedSlots.length);
+      bodyRows.push(`<tr><td class="section" style="text-align:left;" colspan="${colspan}">${esc(title)}</td></tr>`);
+      for (const pid of ids) {
+        const p = peopleMap.get(pid) || { name: pid, company: '', role: '' };
+        const cells = [
+          `<td class="left">${esc(p.name)}</td>`,
+          `<td class="left">${esc(p.company)}</td>`,
+          `<td class="left">${esc(p.role)}</td>`
+        ];
+        for (const date of allDates) {
+          const meals = (pivot[pid] && pivot[pid][date]) ? pivot[pid][date] : {};
+          for (const { abb } of sortedSlots) {
+            const v = meals[abb] ?? '';
+            cells.push(`<td class="num">${esc(v)}</td>`);
+          }
         }
+        bodyRows.push(`<tr>${cells.join('')}</tr>`);
       }
-      bodyRows.push(`<tr>${cells.join('')}</tr>`);
-    }
+    };
+    renderPeople('Accommodated', accommodatedIds);
+    renderPeople('Others', otherIds);
     // 4) Totals row
-    const totalsCells = ['<td class="total left" colspan="2">TOTAL</td>'];
+    const totalsCells = ['<td class="total left" colspan="3">TOTAL</td>'];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) {
         let sum = 0;
-        for (const dateData of Object.values(pivot)) {
-          const meals = dateData[allDates[i]] || {};
+        for (const pid of allPersonIds) {
+          const meals = (pivot[pid] && pivot[pid][allDates[i]]) ? pivot[pid][allDates[i]] : {};
           const v = meals[abb];
           if (typeof v === 'number') sum += v;
         }

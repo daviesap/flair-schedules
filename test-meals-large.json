@@ -32,665 +32,102 @@
       "location": "Room 5"
     }
   ],
+  "tags": [
+    {
+      "id": "uCTLNpKsSuencYzskshkmQ",
+      "name": "AVS",
+      "company": "AV Supplier"
+    },
+    {
+      "id": "q3hoGGIKTA6OLAEFy6Ip5w",
+      "name": "Locals",
+      "company": "Local Crew"
+    },
+    {
+      "id": "anOqa.unSjORUnNgQmh9CA",
+      "name": "Encore",
+      "company": "Role"
+    }
+  ],
+  "names": [
+    {
+      "id": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "Barry Roberts",
+      "role": "Lighting Designer",
+      "company": "AVS"
+    },
+    {
+      "id": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "Bob Fischer",
+      "role": "Room Tech",
+      "company": "AVS"
+    },
+    {
+      "id": "FsnalWZgQP2c03Jvl1bWqg",
+      "name": "Bob Brown",
+      "role": "Audio",
+      "company": "AVS"
+    }
+  ],
   "data": [
     {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "AVS",
-      "slot1": 20
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
       "Date": "2026-04-14T00:00:00.000Z",
-      "name": "Bob Brown",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
+      "accommodated": true,
+      "name": "FsnalWZgQP2c03Jvl1bWqg",
+      "slot1": 6,
+      "slot2": 0,
       "slot3": 1,
       "slot4": 1
     },
     {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "FsnalWZgQP2c03Jvl1bWqg",
+      "slot1": 3,
+      "slot2": 2,
       "slot3": 1,
       "slot4": 1
     },
     {
       "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Bob Brown",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Bob Brown",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
+      "accommodated": true,
+      "name": "FsnalWZgQP2c03Jvl1bWqg",
+      "slot1": 5,
+      "slot2": 0,
       "slot3": 1,
       "slot4": 1
     },
     {
       "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Bob Brown",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
+      "accommodated": true,
+      "name": "FsnalWZgQP2c03Jvl1bWqg",
+      "slot1": 0,
+      "slot2": 0,
       "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Mia Brown",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-11T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-12T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-14T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-13T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
+      "slot4": 1,
+      "slot5": 2
     },
     {
       "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Barry Roberts",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "AVS #2",
-      "slot1": 20
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
+      "accommodated": false,
+      "name": "q3hoGGIKTA6OLAEFy6Ip5w",
+      "slot1": 0,
+      "slot2": 3,
+      "slot3": 20,
+      "slot4": 2,
+      "slot5": 2
     },
     {
       "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Bob Brown #2",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Bob Brown #2",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Bob Brown #2",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Bob Brown #2",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-23T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Mia Brown #2",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-12T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
+      "accommodated": false,
+      "name": "anOqa.unSjORUnNgQmh9CA",
       "slot1": 1
     },
     {
-      "Date": "2026-04-13T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-14T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Barry Roberts #2",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "AVS #3",
-      "slot1": 20
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Bob Brown #3",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Bob Brown #3",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Bob Brown #3",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Bob Brown #3",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-24T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-23T00:00:00.000Z",
-      "name": "Mia Brown #3",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-13T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-14T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Barry Roberts #3",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-
-    {
-      "Date": "2026-04-23T00:00:00.000Z",
-      "name": "AVS #4",
-      "slot1": 20
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Bob Brown #4",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Bob Brown #4",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Bob Brown #4",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-23T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Bob Brown #4",
-      "role": "Audio",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-25T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-24T00:00:00.000Z",
-      "name": "Mia Brown #4",
-      "role": "Carpenter",
-      "slot1": 1,
-      "slot2": 1,
-      "slot3": 1,
-      "slot4": 1
-    },
-    {
-      "Date": "2026-04-14T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-15T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-17T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-16T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-18T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-19T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-20T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-21T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-22T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
-    },
-    {
-      "Date": "2026-04-23T00:00:00.000Z",
-      "name": "Barry Roberts #4",
-      "role": "Lighting Designer",
-      "slot1": 1
+      "Date": "2026-04-10T00:00:00.000Z",
+      "accommodated": false,
+      "name": "uCTLNpKsSuencYzskshkmQ",
+      "slot2": 4
     }
   ]
 }
