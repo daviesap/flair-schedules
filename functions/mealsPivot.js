@@ -3,8 +3,11 @@ import { tmpdir } from "os";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import ExcelJS from "exceljs";
-import { parseISO, format, addDays } from "date-fns";
+import { parseISO, format } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
+
+// Font size for the Excel description row (adjustable)
+const DESC_FONT_SIZE = 10;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +23,7 @@ const greyFill = {
 
 export async function mealsPivotHandler(req, res) {
   try {
-    const { eventName = "Event", startDate, endDate, slots = [], names = [], tags = [], data = [] } = req.body;
+    const { eventName = "Event", dates = [], slots = [], names = [], tags = [], data = [] } = req.body;
 
     if (!Array.isArray(slots) || !Array.isArray(data)) {
       return res.status(400).json({ error: "Invalid or missing 'slots' or 'data'" });
@@ -29,14 +32,9 @@ export async function mealsPivotHandler(req, res) {
       return res.status(400).json({ error: "Invalid or missing 'names' or 'tags'" });
     }
 
-    // Require explicit start and end dates (inclusive)
-    if (!startDate || !endDate) {
-      return res.status(400).json({ error: "Missing 'startDate' or 'endDate' in payload" });
-    }
-    const startDateObj = parseISO(startDate);
-    const endDateObj = parseISO(endDate);
-    if (isNaN(startDateObj) || isNaN(endDateObj) || startDateObj > endDateObj) {
-      return res.status(400).json({ error: "Invalid 'startDate'/'endDate' – must be valid ISO dates and start <= end" });
+    // Require explicit dates[]
+    if (!Array.isArray(dates) || dates.length === 0) {
+      return res.status(400).json({ error: "Missing 'dates' array in payload" });
     }
 
     const sortedSlots = [...slots].sort((a, b) => a.slot - b.slot);
@@ -67,12 +65,18 @@ export async function mealsPivotHandler(req, res) {
     }
     const allPersonIds = Array.from(peopleMap.keys());
 
-    // Build a continuous list of dates from the provided startDate to endDate (inclusive)
-    const allDates = [];
-    for (let cursor = startDateObj; cursor <= endDateObj; cursor = addDays(cursor, 1)) {
-      // Keep as ISO strings like the input (normalized to UTC midnight timestamps)
-      allDates.push(new Date(cursor.getTime()).toISOString());
-    }
+    // Build ordered date list from the provided dates[] (ascending) and a description map
+    const normalized = dates
+      .filter(d => d && d.date)
+      .map(d => ({ date: new Date(d.date).toISOString(), description: d.description || "" }));
+    normalized.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const allDates = normalized.map(d => d.date);
+    // Map descriptions by YYYY-MM-DD to avoid timezone/offset mismatches
+    const descByDateKey = new Map(
+      normalized.map(d => [format(parseISO(d.date), "yyyy-MM-dd"), d.description || ""])
+    );
+    // Also keep an exact ISO -> description map to avoid any timezone key drift
+    const descByIso = new Map(normalized.map(d => [d.date, d.description || ""]));
 
     // Build pivot: personId -> date -> { abb: qty }
     const pivot = {};
@@ -171,20 +175,65 @@ export async function mealsPivotHandler(req, res) {
       cell.font = { bold: true };
     });
 
-    // Row 6: Meal abbreviations
+    // Row 6: Description row (centered, wrapping)
+    // Create a full-width row so merges have backing cells
+    const totalColsForDesc = 3 + allDates.length * sortedSlots.length;
+    const descRowArr = new Array(totalColsForDesc).fill("");
+    const descRowObj = sheet.addRow(descRowArr);
+    const descRowNum = descRowObj.number;
+
+    // Helper to obtain description with multiple fallbacks
+    const getDescForDate = (iso) => {
+      if (!iso) return "";
+      const direct = descByIso.get(iso);
+      if (typeof direct === "string" && direct.trim().length > 0) return direct;
+      const key = format(parseISO(iso), "yyyy-MM-dd");
+      const byKey = descByDateKey.get(key);
+      if (typeof byKey === "string" && byKey.trim().length > 0) return byKey;
+      return "";
+    };
+
+    let curCol = 4;
+    for (const date of allDates) {
+      const desc = getDescForDate(date);
+      const startCol = curCol;
+      const endCol = curCol + sortedSlots.length - 1;
+
+      // Merge the span for this date block
+      sheet.mergeCells(descRowNum, startCol, descRowNum, endCol);
+
+      // Write the value to the top-left cell of the merge
+      const tlCell = sheet.getCell(descRowNum, startCol);
+      tlCell.value = desc || ""; // leave blank if none
+      tlCell.font = { size: DESC_FONT_SIZE };
+      tlCell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+
+      // Also apply alignment/font to all cells in the merged region to avoid Excel rendering quirks
+      for (let c = startCol + 1; c <= endCol; c++) {
+        const cell = sheet.getCell(descRowNum, c);
+        // Do not set a value here; merged region takes value from the TL cell
+        cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+        cell.font = { size: DESC_FONT_SIZE };
+      }
+
+      curCol = endCol + 1;
+    }
+
+    // Give the description row a bit more height for readability
+    descRowObj.height = 42;
+
+    // Row 7: Meal abbreviations
     const slotRow = ["", "", ""];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) {
         slotRow.push(abb);
       }
     }
-
     const slotRowRef = sheet.addRow(slotRow);
     slotRowRef.font = { bold: true };
     slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
 
-    // Row 7+: Section header + person rows
-    //const firstDataRowIndex = sheet.lastRow.number + 1; // should be 7
+    // Row 8+: Section header + person rows
     const sectionHeaderRows = [];
 
     const writeSection = (title, ids) => {
@@ -234,7 +283,7 @@ export async function mealsPivotHandler(req, res) {
     totalRow.getCell(3).value = "";
     totalRow.getCell(3).alignment = { vertical: "middle" };
 
-    const startRow = 7; // First row of data
+    const startRow = 9; // First row of data (was 8, now 9 due to desc row and meal abb row)
     const endRow = sheet.lastRow.number - 1; // Last data row before total
     const colCount = sheet.columnCount;
 
@@ -249,7 +298,7 @@ export async function mealsPivotHandler(req, res) {
 
     // Center-align all data and total cells except for columns A, B, C.
     // Skip section header rows so their merged cells remain left-aligned.
-    for (let rowNum = 7; rowNum <= sheet.lastRow.number; rowNum++) {
+    for (let rowNum = 9; rowNum <= sheet.lastRow.number; rowNum++) {
       if (sectionHeaderRows.includes(rowNum)) continue;
       const row = sheet.getRow(rowNum);
       for (let col = 4; col <= sheet.columnCount; col++) {
@@ -258,14 +307,14 @@ export async function mealsPivotHandler(req, res) {
       }
     }
 
-    // Borders: horizontal below row 6 and below last data row, and vertical left borders for slot groupings
+    // Borders: horizontal below row 7 and below last data row, and vertical left borders for slot groupings
     // Get last data row (before totals)
     const lastDataRow = sheet.lastRow.number - 1;
-    // Horizontal border below row 6 (meal abbreviations)
+    // Horizontal border below row 7 (meal abbreviations)
     const borderStyle = { style: 'thin', color: { argb: 'FF000000' } };
     const keyBorderStyle = { style: 'medium', color: { argb: 'FF000000' } };
-    // Below row 6
-    const mealAbbRowNum = 6;
+    // Below row 7
+    const mealAbbRowNum = 7;
     const mealAbbRow = sheet.getRow(mealAbbRowNum);
     for (let col = 1; col <= sheet.columnCount; col++) {
       mealAbbRow.getCell(col).border = {
@@ -430,6 +479,12 @@ export async function mealsPivotHandler(req, res) {
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot-header slot">${esc(abb)}</th>`);
     }
+    // 2b) Description headers (one cell per date, spanning all that date's slots)
+    const descHeaderCells = ['<th></th>','<th></th>','<th></th>'];
+    for (const d of allDates) {
+      const desc = descByIso.get(d) || '';
+      descHeaderCells.push(`<th class="date-desc" colspan="${sortedSlots.length}"><span class="desc-text">${esc(desc)}</span></th>`);
+    }
     // 3) Body rows
     const bodyRows = [];
     const renderPeople = (title, ids) => {
@@ -513,6 +568,7 @@ export async function mealsPivotHandler(req, res) {
       .replace("{{GENERATED_AT}}", esc(generatedAtText))
       .replace("{{GROUP_HEADERS}}", groupHeaderCells.join(''))
       .replace("{{SLOT_HEADERS}}", slotHeaderCells.join(''))
+      .replace("{{DESC_HEADERS}}", descHeaderCells.join(''))
       .replace("{{BODY_ROWS}}", bodyRows.join(''))
       .replace("{{TOTALS_ROW}}", totalsRowHtml)
       .replace("{{KEY_ROWS}}", keyRowsHtml);

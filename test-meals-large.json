@@ -1,7 +1,60 @@
 {
   "eventName": "Maui",
-  "startDate": "2026-04-10T00:00:00.000Z",
-  "endDate": "2026-04-24T00:00:00.000Z",
+  "dates": [
+    {
+      "date": "2026-04-18T00:00:00.000Z",
+      "description": "Wave 2 - Arrivals / Welcome Reception"
+    },
+    {
+      "date": "2026-04-13T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-10T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-20T00:00:00.000Z",
+      "description": "Wave 2 Gala Dinner"
+    },
+    {
+      "date": "2026-04-23T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-16T00:00:00.000Z",
+      "description": "Wave 1 - Kick off and Theme Party"
+    },
+    {
+      "date": "2026-04-11T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-12T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-24T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-19T00:00:00.000Z",
+      "description": "Wave 2 - Kick off and Theme Party"
+    },
+    {
+      "date": "2026-04-22T00:00:00.000Z"
+    },
+    {
+      "date": "2026-04-14T00:00:00.000Z",
+      "description": "Wave 1 - GC Arrivals"
+    },
+    {
+      "date": "2026-04-21T00:00:00.000Z",
+      "description": "Departures / Load out"
+    },
+    {
+      "date": "2026-04-15T00:00:00.000Z",
+      "description": "Wave 1 - Arrivals / Welcome Reception"
+    },
+    {
+      "date": "2026-04-17T00:00:00.000Z",
+      "description": "Wave 1 Gala Dinner.  Wave 2 GC Arrivals"
+    }
+  ],
   "slots": [
     {
       "slot": 1,

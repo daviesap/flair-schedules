@@ -21,6 +21,10 @@ header .sub {
   text-align: left !important;
 }
 
+/* Description row beneath each date group */
+.date-desc { text-align: left; background: #f3f7ff; }
+.date-desc .desc-text { display: inline-block; white-space: normal; line-height: 1.25; font-size: 0.9rem; color: black }
+
 table {
   border-collapse: collapse;
   margin: 0 auto;
@@ -94,6 +98,10 @@ th {
 .key-header {
   color: black;
   text-align: left;
+}
+
+.section-header {
+  text-align: left !important;
 }
 
 /* --- Key table overrides --- */
