@@ -403,20 +403,27 @@ export async function mealsPivotHandler(req, res) {
     // 1) Friendly date labels
     const dateLabels = allDates.map(d => format(parseISO(d), "EEE d MMM"));
     // 2) Header rows
-    const groupHeaderCells = ['<th class="sticky name">Name</th>', '<th class="sticky company">Company</th>', '<th class="sticky role">Role</th>'];
+    const groupHeaderCells = [
+      '<th class="sticky name" style="text-align:left;">Name</th>',
+      '<th class="sticky company" style="text-align:left;">Company</th>',
+      '<th class="sticky role" style="text-align:left;">Role</th>'
+    ];
     for (const lbl of dateLabels) {
-      groupHeaderCells.push(`<th class="group" colspan="${sortedSlots.length}">${esc(lbl)}</th>`);
+      groupHeaderCells.push(`<th class="group-header group" colspan="${sortedSlots.length}" >${esc(lbl)}</th>`);
     }
     const slotHeaderCells = ['<th></th>','<th></th>','<th></th>'];
     for (let i = 0; i < allDates.length; i++) {
-      for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot">${esc(abb)}</th>`);
+      for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot-header slot">${esc(abb)}</th>`);
     }
     // 3) Body rows
     const bodyRows = [];
     const renderPeople = (title, ids) => {
       if (ids.length === 0) return;
       const colspan = 3 + (allDates.length * sortedSlots.length);
-      bodyRows.push(`<tr><td class="section" style="text-align:left;" colspan="${colspan}">${esc(title)}</td></tr>`);
+      const sectionClass = (title && title.toLowerCase() === 'accommodated')
+        ? 'section-header accommodated'
+        : 'section-header others';
+      bodyRows.push(`<tr class="section-row"><td class="${sectionClass}" colspan="${colspan}">${esc(title)}</td></tr>`);
       for (const pid of ids) {
         const p = peopleMap.get(pid) || { name: pid, company: '', role: '' };
         const cells = [
@@ -428,7 +435,7 @@ export async function mealsPivotHandler(req, res) {
           const meals = (pivot[pid] && pivot[pid][date]) ? pivot[pid][date] : {};
           for (const { abb } of sortedSlots) {
             const v = meals[abb] ?? '';
-            cells.push(`<td class="num">${esc(v)}</td>`);
+            cells.push(`<td class="meal-num num">${esc(v)}</td>`);
           }
         }
         bodyRows.push(`<tr>${cells.join('')}</tr>`);
@@ -437,7 +444,7 @@ export async function mealsPivotHandler(req, res) {
     renderPeople('Accommodated', accommodatedIds);
     renderPeople('Others', otherIds);
     // 4) Totals row
-    const totalsCells = ['<td class="total left" colspan="3">TOTAL</td>'];
+    const totalsCells = ['<td class="total left meal-total-label" colspan="3">TOTAL</td>'];
     for (let i = 0; i < allDates.length; i++) {
       for (const { abb } of sortedSlots) {
         let sum = 0;
@@ -446,12 +453,14 @@ export async function mealsPivotHandler(req, res) {
           const v = meals[abb];
           if (typeof v === 'number') sum += v;
         }
-        totalsCells.push(`<td class="total num">${sum}</td>`);
+        totalsCells.push(`<td class="total num meal-total">${sum}</td>`);
       }
     }
-    const totalsRowHtml = `<tr>${totalsCells.join('')}</tr>`;
+    const totalsRowHtml = `<tr class="totals-row">${totalsCells.join('')}</tr>`;
     // 5) Key table
-    const keyRowsHtml = sortedSlots.map(s => `<tr><td>${esc(s.name)}</td><td>${esc(s.abb)}</td><td class="loc">${esc(s.location || '')}</td></tr>`).join('');
+    const keyRowsHtml = sortedSlots.map(s =>
+      `<tr class="key-row"><td class="key-meal">${esc(s.name)}</td><td class="key-abb">${esc(s.abb)}</td><td class="key-loc loc">${esc(s.location || '')}</td></tr>`
+    ).join('');
     // 6) CSS and HTML doc (CSS can be external in project but is embedded into the final HTML)
     const generatedAtText = format(new Date(), "EEEE d MMM yyyy, h:mm a");
 
@@ -461,9 +470,13 @@ export async function mealsPivotHandler(req, res) {
     if (!fs.existsSync(cssPath)) {
       throw new Error(`CSS file not found at ${cssPath}`);
     }
-    const htmlCss = (await fs.promises.readFile(cssPath, "utf8")).trim();
+    let htmlCss = (await fs.promises.readFile(cssPath, "utf8")).trim();
     if (!htmlCss) {
       throw new Error(`CSS file at ${cssPath} is empty`);
+    }
+    // Ensure .left is styled with left alignment
+    if (!/\.left\s*\{[^}]*text-align\s*:\s*left/i.test(htmlCss)) {
+      htmlCss += '\n.left { text-align: left; }\n';
     }
 
     // Strictly load external HTML template; throw if missing/empty
@@ -479,7 +492,9 @@ export async function mealsPivotHandler(req, res) {
     // Replace placeholders (Excel URL filled later per target)
     let htmlPrepared = htmlTemplate
       .replace("/* {{CSS}} */", htmlCss)
-      .replace("{{EVENT_NAME}}", esc(eventName))
+      // Replace *all* occurrences of EVENT_NAME (title tag and H1)
+      .replace(/{{EVENT_NAME}}/g, esc(eventName))
+      // Plain text for generated-at; alignment handled in CSS
       .replace("{{GENERATED_AT}}", esc(generatedAtText))
       .replace("{{GROUP_HEADERS}}", groupHeaderCells.join(''))
       .replace("{{SLOT_HEADERS}}", slotHeaderCells.join(''))

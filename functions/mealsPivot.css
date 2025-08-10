@@ -8,6 +8,19 @@ body {
   margin: 20px;
 }
 
+/* Force header content to be left-aligned even if body is centered */
+header {
+  text-align: left;
+}
+header .sub {
+  text-align: left;
+}
+
+/* Utility class to left-align any cell/content */
+.left {
+  text-align: left !important;
+}
+
 table {
   border-collapse: collapse;
   margin: 0 auto;
@@ -22,9 +35,15 @@ table {
   width: 200px; /* adjust to suit */
 }
 
-/* Make the second column (Role) wider */
+/* Make the second column (Company) wider */
 .table-wrap table th:nth-child(2),
 .table-wrap table td:nth-child(2) {
+  width: 150px; /* adjust to suit */
+}
+
+/* Make the third column (Role) wider */
+.table-wrap table th:nth-child(3),
+.table-wrap table td:nth-child(3) {
   width: 150px; /* adjust to suit */
 }
 
@@ -42,4 +61,33 @@ th {
 
 td {
   text-align: center;
+}
+
+/* --- Placeholder rules for new semantic classes --- */
+.group-header {
+  color: black;
+}
+
+.slot-header {
+  color: black;
+}
+
+.meal-number {
+  color: black;
+}
+
+.totals-row {
+  color: black;
+}
+
+.key-table {
+  color: black;
+}
+
+.key-title {
+  color: black;
+}
+
+.key-header {
+  color: black;
 }
