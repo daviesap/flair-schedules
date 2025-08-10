@@ -66,7 +66,7 @@ export async function mealsPivotHandler(req, res) {
 
     for (const row of data) {
       const personId = row.name; // in the new JSON this is the person/tag id
-      const person = peopleMap.get(personId) || { name: "Unknown", company: "", role: "" };
+      //const person = peopleMap.get(personId) || { name: "Unknown", company: "", role: "" };
       const date = row.Date;
 
       if (!pivot[personId]) pivot[personId] = {};
@@ -169,7 +169,7 @@ export async function mealsPivotHandler(req, res) {
     slotRowRef.alignment = { vertical: "middle", horizontal: "center" };
 
     // Row 7+: Section header + person rows
-    const firstDataRowIndex = sheet.lastRow.number + 1; // should be 7
+    //const firstDataRowIndex = sheet.lastRow.number + 1; // should be 7
     const sectionHeaderRows = [];
 
     const writeSection = (title, ids) => {
@@ -178,7 +178,7 @@ export async function mealsPivotHandler(req, res) {
       const sectionRowIdx = sheet.lastRow.number + 1;
       const totalCols = sheet.columnCount || (2 + allDates.length * sortedSlots.length + 1);
       // Create an empty row then merge across all columns to place the title
-      const r = sheet.addRow([]);
+      //const r = sheet.addRow([]);
       sheet.mergeCells(sectionRowIdx, 1, sectionRowIdx, totalCols);
       const scell = sheet.getCell(sectionRowIdx, 1);
       scell.value = title;
@@ -478,7 +478,7 @@ export async function mealsPivotHandler(req, res) {
 
     // Replace placeholders (Excel URL filled later per target)
     let htmlPrepared = htmlTemplate
-      .replace("{{CSS}}", htmlCss)
+      .replace("/* {{CSS}} */", htmlCss)
       .replace("{{EVENT_NAME}}", esc(eventName))
       .replace("{{GENERATED_AT}}", esc(generatedAtText))
       .replace("{{GROUP_HEADERS}}", groupHeaderCells.join(''))
