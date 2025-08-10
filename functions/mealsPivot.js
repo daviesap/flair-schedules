@@ -1,9 +1,16 @@
 // mealsPivot.js
 import { tmpdir } from "os";
-import { join } from "path";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import ExcelJS from "exceljs";
 import { parseISO, format } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// HTML escape helper
+const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 const greyFill = {
   type: 'pattern',
@@ -318,40 +325,126 @@ export async function mealsPivotHandler(req, res) {
       };
     }
 
+    // Build HTML snapshot
+    // 1) Friendly date labels
+    const dateLabels = allDates.map(d => format(parseISO(d), "EEE d MMM"));
+    // 2) Header rows
+    const groupHeaderCells = ['<th class="sticky name">Name</th>','<th class="sticky role">Role</th>'];
+    for (const lbl of dateLabels) {
+      groupHeaderCells.push(`<th class="group" colspan="${sortedSlots.length}">${esc(lbl)}</th>`);
+    }
+    const slotHeaderCells = ['<th></th>','<th></th>'];
+    for (let i = 0; i < allDates.length; i++) {
+      for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot">${esc(abb)}</th>`);
+    }
+    // 3) Body rows
+    const bodyRows = [];
+    for (const [key, dateData] of Object.entries(pivot)) {
+      const [name, role] = key.split("__");
+      const cells = [`<td class="left">${esc(name)}</td>`, `<td class="left">${esc(role)}</td>`];
+      for (const date of allDates) {
+        const meals = dateData[date] || {};
+        for (const { abb } of sortedSlots) {
+          const v = meals[abb] ?? '';
+          cells.push(`<td class="num">${esc(v)}</td>`);
+        }
+      }
+      bodyRows.push(`<tr>${cells.join('')}</tr>`);
+    }
+    // 4) Totals row
+    const totalsCells = ['<td class="total left" colspan="2">TOTAL</td>'];
+    for (let i = 0; i < allDates.length; i++) {
+      for (const { abb } of sortedSlots) {
+        let sum = 0;
+        for (const dateData of Object.values(pivot)) {
+          const meals = dateData[allDates[i]] || {};
+          const v = meals[abb];
+          if (typeof v === 'number') sum += v;
+        }
+        totalsCells.push(`<td class="total num">${sum}</td>`);
+      }
+    }
+    const totalsRowHtml = `<tr>${totalsCells.join('')}</tr>`;
+    // 5) Key table
+    const keyRowsHtml = sortedSlots.map(s => `<tr><td>${esc(s.name)}</td><td>${esc(s.abb)}</td><td class="loc">${esc(s.location || '')}</td></tr>`).join('');
+    // 6) CSS and HTML doc (CSS can be external in project but is embedded into the final HTML)
+    const generatedAtText = format(new Date(), "EEEE d MMM yyyy, h:mm a");
 
-    // Save to temp file
-    const fileName = `${eventName}_Catering_${Date.now()}.xlsx`;
-    const filePath = join(tmpdir(), fileName);
+    // Strictly load external CSS; throw if missing or empty to keep output consistent
+    const fs = await import("fs");
+    const cssPath = join(__dirname, "mealsPivot.css");
+    if (!fs.existsSync(cssPath)) {
+      throw new Error(`CSS file not found at ${cssPath}`);
+    }
+    const htmlCss = (await fs.promises.readFile(cssPath, "utf8")).trim();
+    if (!htmlCss) {
+      throw new Error(`CSS file at ${cssPath} is empty`);
+    }
+
+    // Strictly load external HTML template; throw if missing/empty
+    const htmlPath = join(__dirname, "mealsPivot.html");
+    if (!fs.existsSync(htmlPath)) {
+      throw new Error(`HTML template not found at ${htmlPath}`);
+    }
+    let htmlTemplate = (await fs.promises.readFile(htmlPath, "utf8")).trim();
+    if (!htmlTemplate) {
+      throw new Error(`HTML template at ${htmlPath} is empty`);
+    }
+
+    // Replace placeholders (Excel URL filled later per target)
+    let htmlPrepared = htmlTemplate
+      .replace("{{CSS}}", htmlCss)
+      .replace("{{EVENT_NAME}}", esc(eventName))
+      .replace("{{GENERATED_AT}}", esc(generatedAtText))
+      .replace("{{GROUP_HEADERS}}", groupHeaderCells.join(''))
+      .replace("{{SLOT_HEADERS}}", slotHeaderCells.join(''))
+      .replace("{{BODY_ROWS}}", bodyRows.join(''))
+      .replace("{{TOTALS_ROW}}", totalsRowHtml)
+      .replace("{{KEY_ROWS}}", keyRowsHtml);
+
+    // Save outputs
+    const ts = Date.now();
+    const xlsxFileName = `${eventName}_Catering_${ts}.xlsx`;
+    const htmlFileName = `${eventName}_Catering_${ts}.html`;
 
     const isRunningLocally = process.env.FUNCTIONS_EMULATOR === 'true';
 
     if (isRunningLocally) {
       const fs = await import('fs');
       const localDir = '/Users/apndavies/Coding/Flair Schedules/output';
-      if (!fs.existsSync(localDir)) {
-        fs.mkdirSync(localDir);
-      }
-      const localPath = `${localDir}/${fileName}`;
-      await workbook.xlsx.writeFile(localPath);
-      console.log(`✅ File saved locally at ${localPath}`);
-      return res.json({ status: "success", localPath });
+      if (!fs.existsSync(localDir)) fs.mkdirSync(localDir);
+      const localXlsxPath = `${localDir}/${xlsxFileName}`;
+      const localHtmlPath = `${localDir}/${htmlFileName}`;
+
+      await workbook.xlsx.writeFile(localXlsxPath);
+      // For the HTML we don’t yet know the Excel URL; use a file path or leave the placeholder
+      const htmlWithLocalLink = htmlPrepared.replace("{{EXCEL_URL}}", xlsxFileName);
+      await fs.promises.writeFile(localHtmlPath, htmlWithLocalLink, 'utf8');
+
+      console.log(`✅ Files saved locally at ${localDir}`);
+      return res.json({ status: "success", localXlsxPath, localHtmlPath });
     } else {
-      // Save to temp file
-      await workbook.xlsx.writeFile(filePath);
+      // Cloud: write to tmp then upload both files to Storage and make public
+      const tmpXlsx = join(tmpdir(), xlsxFileName);
+      await workbook.xlsx.writeFile(tmpXlsx);
 
-      // Upload to Firebase Storage and make public
       const bucket = getStorage().bucket();
-      const destPath = `meals/${fileName}`;
-      await bucket.upload(filePath, {
-        destination: destPath,
-        metadata: {
-          contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        }
-      });
-      await bucket.file(destPath).makePublic();
+      const xlsxDest = `meals/${xlsxFileName}`;
+      await bucket.upload(tmpXlsx, { destination: xlsxDest, metadata: { contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' } });
+      await bucket.file(xlsxDest).makePublic();
+      const excelUrl = `https://storage.googleapis.com/${bucket.name}/${xlsxDest}`;
 
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destPath}`;
-      return res.json({ status: "success", fileUrl: publicUrl });
+      // Now upload HTML with the real Excel URL embedded
+      const tmpHtml = join(tmpdir(), htmlFileName);
+      const fs = await import('fs');
+      const htmlWithUrl = htmlPrepared.replace("{{EXCEL_URL}}", excelUrl);
+      await fs.promises.writeFile(tmpHtml, htmlWithUrl, 'utf8');
+      const htmlDest = `meals/${htmlFileName}`;
+      await bucket.upload(tmpHtml, { destination: htmlDest, metadata: { contentType: 'text/html' } });
+      await bucket.file(htmlDest).makePublic();
+      const htmlUrl = `https://storage.googleapis.com/${bucket.name}/${htmlDest}`;
+
+      return res.json({ status: 'success', fileUrl: excelUrl, htmlUrl });
     }
 
   } catch (err) {

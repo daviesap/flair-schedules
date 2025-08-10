@@ -1,0 +1,45 @@
+/* This file is loaded and embedded inline into the final HTML by mealsPivot.js */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center;
+  margin: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  width: 80%;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Make the first column (Name) wider */
+.table-wrap table th:first-child,
+.table-wrap table td:first-child {
+  width: 200px; /* adjust to suit */
+}
+
+/* Make the second column (Role) wider */
+.table-wrap table th:nth-child(2),
+.table-wrap table td:nth-child(2) {
+  width: 150px; /* adjust to suit */
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}

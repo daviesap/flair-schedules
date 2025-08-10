@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{EVENT_NAME}} – Catering Grid</title>
+  <style>{{CSS}}</style>
+</head>
+<body>
+  <header>
+    <h1>{{EVENT_NAME}}</h1>
+    <div class="sub">Catering Grid</div>
+    <div class="sub">Generated {{GENERATED_AT}}</div>
+    <div class="actions">
+      <a class="btn" href="{{EXCEL_URL}}" target="__blank" rel="noopener">⬇️ Download Excel</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="table-wrap">
+      <table aria-label="Catering grid">
+        <thead>
+          <tr>{{GROUP_HEADERS}}</tr>
+          <tr>{{SLOT_HEADERS}}</tr>
+        </thead>
+        <tbody>
+          {{BODY_ROWS}}
+          {{TOTALS_ROW}}
+        </tbody>
+      </table>
+    </div>
+
+    <table class="key" aria-label="Key">
+      <thead>
+        <tr><th>Meal</th><th>Abbreviation</th><th>Location</th></tr>
+      </thead>
+      <tbody>
+        {{KEY_ROWS}}
+      </tbody>
+    </table>
+  </main>
+
+  <footer>View-only snapshot. To update, regenerate from Glide.</footer>
+</body>
+</html>
