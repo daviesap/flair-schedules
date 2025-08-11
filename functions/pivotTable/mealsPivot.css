@@ -69,6 +69,12 @@ table {
   table-layout: fixed;
 }
 
+.catering-grid {
+  margin-left: 0;   /* Removes any auto-centering from margins */
+  margin-right: auto;
+  text-align: left; /* Aligns text inside the cells */
+}
+
 /* Make the first three columns respect set widths using variables */
 .table-wrap table th:first-child,
 .table-wrap table td:first-child {
@@ -116,7 +122,7 @@ th {
 
 /* Example tweaks */
 .group-header-row th { background:#4CAF50; color:#fff; }
-.date-desc-row th { background:#9fa0a0; color:#222; }
+.date-desc-row th { background:#eeeeee; color:#222; }
 .slot-header-row th { background:white; color:black; }
 
 /* --- Placeholder rules for new semantic classes --- */
@@ -173,6 +179,7 @@ th {
 
 .totals-row {
   color: black;
+  font-weight: bold;
 }
 
 .key-table {
@@ -200,6 +207,8 @@ table.key td {
 
 /* Optional: keep the key table width and centering consistent */
 table.key {
-  width: 80%;
-  margin: 24px auto 0;
+  margin-top: 20px;
+  width: 500px;
+  margin-left: 0;   /* align to left edge */
+  margin-right: auto; /* push remaining space to the right */
 }
