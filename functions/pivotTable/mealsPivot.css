@@ -90,7 +90,7 @@ table {
 }
 /* Section header should only span the first three columns */
 .section-header {
-  background-color: #ffffff;
+  background-color: white;
   color: black;
   font-weight: bold;
   text-align: left !important;
@@ -180,6 +180,7 @@ th {
 .totals-row {
   color: black;
   font-weight: bold;
+  border-top: black 2px solid;
 }
 
 .key-table {
