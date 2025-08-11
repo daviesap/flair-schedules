@@ -11,6 +11,27 @@ curl -X POST "http://127.0.0.1:5001/flair-schedules/europe-west2/FlairScheduleHe
 
 ## Git Cheat Sheet
 
+## Finishing work
+
+# 1. Stage all changes
+git add .
+
+# 2. Commit with a useful message
+git commit -m "WIP: brief description of what you did"
+
+# 3. Push your branch to GitHub (usually main)
+git push origin main
+
+## Starting work
+# 1. Make sure you're on the correct branch
+git checkout main
+
+# 2. Pull the latest changes from GitHub
+git pull origin main
+
+
+
+
 ### Branch Management
 ```sh
 # List all local branches
