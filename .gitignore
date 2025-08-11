@@ -71,3 +71,4 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 functions/.DS_Store
+.DS_Store
