@@ -116,7 +116,7 @@ export async function mealsPivotHandler(req, res) {
     if (isRunningLocally) {
       // Save to local /output folder for convenience
       const fs = await import('fs');
-      const localDir = '/Users/apndavies/Coding/Flair Schedules/output';
+      const localDir = '/Users/apndavies/Coding/flair-schedules/output';
       if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
       localXlsxPath = `${localDir}/${xlsxFileName}`;
     } else {
@@ -157,7 +157,7 @@ export async function mealsPivotHandler(req, res) {
     let localHtmlPath;
     if (isRunningLocally) {
       const fs = await import('fs');
-      const localDir = '/Users/apndavies/Coding/Flair Schedules/output';
+      const localDir = '/Users/apndavies/Coding/flair-schedules/output';
       if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
       localHtmlPath = `${localDir}/${htmlFileName}`;
     } else {
