@@ -49,13 +49,18 @@ export async function buildHtml({
   // Slot headers (B/L/D/O/TC...)
   const slotHeaderCells = ['<th></th>','<th></th>','<th></th>'];
   for (let i = 0; i < allDates.length; i++) {
-    for (const { abb } of sortedSlots) slotHeaderCells.push(`<th class="slot-header slot">${esc(abb)}</th>`);
+    for (let j = 0; j < sortedSlots.length; j++) {
+      const { abb } = sortedSlots[j];
+      const extraClass = (j === 0) ? ' first-slot' : '';
+      slotHeaderCells.push(`<th class="slot-header slot${extraClass}">${esc(abb)}</th>`);
+    }
   }
 
   // Description headers (one per date, spanning all that date's slots)
   const descHeaderCells = ['<th></th>','<th></th>','<th></th>'];
   for (const iso of allDates) {
     const desc = descByIso.get(iso) || '';
+    // No first-slot needed for description row since it spans all slots for each date
     descHeaderCells.push(`<th class="date-desc" colspan="${sortedSlots.length}"><span class="desc-text">${esc(desc)}</span></th>`);
   }
 
@@ -63,11 +68,10 @@ export async function buildHtml({
   const bodyRows = [];
   const renderPeople = (title, ids) => {
     if (!ids.length) return;
-    const colspan = 3 + (allDates.length * sortedSlots.length);
     const sectionClass = (title && title.toLowerCase() === 'accommodated')
       ? 'section-header accommodated'
       : 'section-header others';
-    bodyRows.push(`<tr class="section-row"><td class="${sectionClass}" colspan="${colspan}">${esc(title)}</td></tr>`);
+    bodyRows.push(`<tr class="section-row"><td class="${sectionClass}" colspan="3">${esc(title)}</td></tr>`);
     for (const pid of ids) {
       const p = peopleMap.get(pid) || { name: pid, company: '', role: '' };
       const cells = [
@@ -75,9 +79,14 @@ export async function buildHtml({
         `<td class="left">${esc(p.company)}</td>`,
         `<td class="left">${esc(p.role)}</td>`
       ];
-      for (const iso of allDates) {
+      for (let i = 0; i < allDates.length; i++) {
+        const iso = allDates[i];
         const meals = (pivot[pid] && pivot[pid][iso]) ? pivot[pid][iso] : {};
-        for (const { abb } of sortedSlots) cells.push(`<td class="meal-num num">${esc(meals[abb] ?? '')}</td>`);
+        for (let j = 0; j < sortedSlots.length; j++) {
+          const { abb } = sortedSlots[j];
+          const extraClass = (j === 0) ? ' first-slot' : '';
+          cells.push(`<td class="meal-num num${extraClass}">${esc(meals[abb] ?? '')}</td>`);
+        }
       }
       bodyRows.push(`<tr>${cells.join('')}</tr>`);
     }
@@ -88,15 +97,18 @@ export async function buildHtml({
   // Totals row
   const allIds = [...accommodatedIds, ...otherIds];
   const totalsCells = ['<td class="total left meal-total-label" colspan="3">TOTAL</td>'];
-  for (const iso of allDates) {
-    for (const { abb } of sortedSlots) {
+  for (let i = 0; i < allDates.length; i++) {
+    const iso = allDates[i];
+    for (let j = 0; j < sortedSlots.length; j++) {
+      const { abb } = sortedSlots[j];
       let sum = 0;
       for (const pid of allIds) {
         const meals = (pivot[pid] && pivot[pid][iso]) ? pivot[pid][iso] : {};
         const v = meals[abb];
         if (typeof v === 'number') sum += v;
       }
-      totalsCells.push(`<td class="total num meal-total">${sum}</td>`);
+      const extraClass = (j === 0) ? ' first-slot' : '';
+      totalsCells.push(`<td class="total num meal-total${extraClass}">${sum}</td>`);
     }
   }
   const totalsRowHtml = `<tr class="totals-row">${totalsCells.join('')}</tr>`;

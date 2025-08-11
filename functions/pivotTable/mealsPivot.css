@@ -21,34 +21,77 @@ header .sub {
   text-align: left !important;
 }
 
+/* Thicker left border for the first slot column in each date group */
+.first-slot {
+  border-left: 2px solid #333; /* Adjust thickness and color as needed */
+}
+
 /* Description row beneath each date group */
 .date-desc { text-align: left; background: #f3f7ff; }
 .date-desc .desc-text { display: inline-block; white-space: normal; line-height: 1.25; font-size: 0.9rem; color: black }
 
+/* Responsive column widths using CSS variables */
+:root {
+  --col1-width: 150px;
+  --col2-width: 150px;
+  --col3-width: 150px;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --col1-width: 140px;
+    --col2-width: 100px;
+    --col3-width: 100px;
+  }
+}
+@media (max-width: 600px) {
+  :root {
+    --col1-width: 90px;
+    --col2-width: 70px;
+    --col3-width: 70px;
+  }
+}
+
+/* Allow horizontal scrolling when needed */
+.table-wrap {
+  overflow-x: auto;
+}
+.table-wrap table {
+  width: max-content; /* instead of fixed 80%, let content dictate width */
+}
+
 table {
   border-collapse: collapse;
   margin: 0 auto;
-  width: 80%;
+  /* width: 80%; */
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  table-layout: fixed;
 }
 
-/* Make the first column (Name) wider */
+/* Make the first three columns respect set widths using variables */
 .table-wrap table th:first-child,
 .table-wrap table td:first-child {
-  width: 200px; /* adjust to suit */
+  width: var(--col1-width);
 }
-
-/* Make the second column (Company) wider */
 .table-wrap table th:nth-child(2),
 .table-wrap table td:nth-child(2) {
-  width: 150px; /* adjust to suit */
+  width: var(--col2-width);
 }
-
-/* Make the third column (Role) wider */
 .table-wrap table th:nth-child(3),
 .table-wrap table td:nth-child(3) {
-  width: 150px; /* adjust to suit */
+  width: var(--col3-width);
+}
+/* Section header should only span the first three columns */
+.section-header {
+  background-color: #ffffff;
+  color: black;
+  font-weight: bold;
+  text-align: left !important;
+  display: table-cell;
+  width: calc(var(--col1-width) + var(--col2-width) + var(--col3-width));
+  border: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
 th, td {
@@ -62,11 +105,19 @@ th {
   font-weight: bold;
 }
 
-/* Center text in table cells inside .table-wrap only */
+/* Center text in table cells inside .table-wrap only, and handle overflow */
 .table-wrap th,
 .table-wrap td {
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Example tweaks */
+.group-header-row th { background:#4CAF50; color:#fff; }
+.date-desc-row th { background:#9fa0a0; color:#222; }
+.slot-header-row th { background:white; color:black; }
 
 /* --- Placeholder rules for new semantic classes --- */
 .group-header {
@@ -74,11 +125,50 @@ th {
 }
 
 .slot-header {
-  color: white;
+  color: black;
+  background-color: #ffffff;
 }
 
 .meal-number {
   color: black;
+}
+
+/* Ensure numeric cells never show list markers/bullets or trailing pseudo content */
+.meal-num, .meal-number, .num {
+  list-style: none !important;
+  display: table-cell; /* make sure they are not treated as list-items */
+}
+.meal-num::marker, .num::marker { content: none; }
+.meal-num::after, .num::after { content: "" !important; }
+
+/* Prevent dots caused by ellipsis clipping in narrow numeric cells */
+.meal-num { text-overflow: clip; }
+
+/* Disable ellipsis for numeric table cells inside .table-wrap and adjust overflow */
+.table-wrap td.meal-num,
+.table-wrap th.meal-num,
+.table-wrap td.num,
+.table-wrap th.num {
+  text-overflow: clip;
+  overflow: visible;
+}
+
+/* Reduce padding slightly for numeric cells inside .table-wrap */
+.table-wrap td.meal-num,
+.table-wrap td.num {
+  padding: 6px 8px;
+}
+
+/* Fixed width for all numeric columns using a CSS variable */
+:root {
+  --num-col-width: 0px; /* tweak as needed */
+}
+
+.table-wrap table th.meal-num,
+.table-wrap table td.meal-num,
+.table-wrap table th.num,
+.table-wrap table td.num {
+  width: var(--num-col-width);
 }
 
 .totals-row {
@@ -100,9 +190,6 @@ th {
   text-align: left;
 }
 
-.section-header {
-  text-align: left !important;
-}
 
 /* --- Key table overrides --- */
 /* Force the Key table cells to be left-aligned */

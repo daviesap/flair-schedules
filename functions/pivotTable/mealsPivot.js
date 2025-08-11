@@ -106,7 +106,8 @@ export async function mealsPivotHandler(req, res) {
     // --- Filenames and environment ---
     const ts = Date.now();
     const xlsxFileName = `${eventName}_Catering_${ts}.xlsx`;
-    const htmlFileName = `${eventName}_Catering_${ts}.html`;
+    const localHtmlFileName = `${eventName}_Catering_local.html`; // fixed local name for browser refresh
+    const cloudHtmlFileName = `${eventName}_Catering_${ts}.html`; // versioned for cloud
 
     const generatedAtText = format(new Date(), "EEEE d MMM yyyy, h:mm a");
     const isRunningLocally = process.env.FUNCTIONS_EMULATOR === 'true';
@@ -159,9 +160,9 @@ export async function mealsPivotHandler(req, res) {
       const fs = await import('fs');
       const localDir = '/Users/apndavies/Coding/flair-schedules/output';
       if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
-      localHtmlPath = `${localDir}/${htmlFileName}`;
+      localHtmlPath = `${localDir}/${localHtmlFileName}`;
     } else {
-      localHtmlPath = join(tmpdir(), htmlFileName);
+      localHtmlPath = join(tmpdir(), cloudHtmlFileName);
     }
 
     const htmlString = await buildHtml({
@@ -189,8 +190,11 @@ export async function mealsPivotHandler(req, res) {
     // --- 4) Upload HTML in cloud and return links ---
     if (!isRunningLocally) {
       const bucket = getStorage().bucket();
-      const htmlDest = `meals/${htmlFileName}`;
-      await bucket.upload(localHtmlPath, { destination: htmlDest, metadata: { contentType: 'text/html' } });
+      const htmlDest = `meals/${cloudHtmlFileName}`;
+      await bucket.upload(localHtmlPath, {
+        destination: htmlDest,
+        metadata: { contentType: 'text/html', cacheControl: 'no-cache, max-age=0' }
+      });
       await bucket.file(htmlDest).makePublic();
       const htmlUrl = `https://storage.googleapis.com/${bucket.name}/${htmlDest}`;
       return res.json({ status: 'success', fileUrl: excelUrl, htmlUrl });
