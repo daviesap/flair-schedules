@@ -1,4 +1,5 @@
 {
+  "Schema": "V1 - 12th August 2025",
   "eventName": "Maui",
   "dates": [
     {
@@ -114,26 +115,118 @@
   ],
   "names": [
     {
-      "id": "JKY7gAixTfe1PxI6Mw1Naw",
-      "name": "Jack Miller",
+      "id": "JKY7gAixTfe1PxI6Mw1Naw_X1",
+      "name": "Jack Miller #1",
       "role": "Lighting Designer ",
       "company": "AVS"
     },
+    
+   {
+      "id": "uCTLNpKsSuencYzskshkmQ_X1",
+      "name": "Jack Miller #33",
+      "role": "Lighting Designer 33 ",
+      "company": "AVS 33"
+    },
+
+
+       {
+      "id": "q3hoGGIKTA6OLAEFy6Ip5w_X1",
+      "name": "Jack Miller #2",
+      "role": "Lighting Designer 2 ",
+      "company": "AVS 2"
+    },
     {
-      "id": "sqhyBGaUQJuO8kWi-6pybA",
-      "name": "Barry Roberts",
+      "id": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "name": "Barry Roberts #1",
       "role": "Lighting Designer",
       "company": "AVS"
     },
     {
-      "id": "UMH08v0ATeqr3nUgzCgmPw",
-      "name": "Bob Fischer",
+      "id": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "name": "Bob Fischer #1",
       "role": "Room Tech",
       "company": "AVS"
     },
     {
-      "id": "FsnalWZgQP2c03Jvl1bWqg",
-      "name": "Bob Brown",
+      "id": "FsnalWZgQP2c03Jvl1bWqg_X1",
+      "name": "Bob Brown #1",
+      "role": "Audio",
+      "company": "AVS"
+    },  {
+      "id": "uCTLNpKsSuencYzskshkmQ_X2",
+      "name": "Bob Brown #11",
+      "role": "Audio 11",
+      "company": "AVS 11"
+    },
+    {
+      "id": "JKY7gAixTfe1PxI6Mw1Naw_X2",
+      "name": "Jack Miller #2",
+      "role": "Lighting Designer ",
+      "company": "AVS"
+    },
+    {
+      "id": "sqhyBGaUQJuO8kWi-6pybA_X2",
+      "name": "Barry Roberts #2",
+      "role": "Lighting Designer",
+      "company": "AVS"
+    },
+    {
+      "id": "UMH08v0ATeqr3nUgzCgmPw_X2",
+      "name": "Bob Fischer #2",
+      "role": "Room Tech",
+      "company": "AVS"
+    },
+    {
+      "id": "FsnalWZgQP2c03Jvl1bWqg_X2",
+      "name": "Bob Brown #2",
+      "role": "Audio",
+      "company": "AVS"
+    },
+    {
+      "id": "JKY7gAixTfe1PxI6Mw1Naw_X3",
+      "name": "Jack Miller #3",
+      "role": "Lighting Designer ",
+      "company": "AVS"
+    },
+    {
+      "id": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "name": "Barry Roberts #3",
+      "role": "Lighting Designer",
+      "company": "AVS"
+    },
+    {
+      "id": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "name": "Bob Fischer #3",
+      "role": "Room Tech",
+      "company": "AVS"
+    },
+    {
+      "id": "FsnalWZgQP2c03Jvl1bWqg_X3",
+      "name": "Bob Brown #3",
+      "role": "Audio",
+      "company": "AVS"
+    },
+    {
+      "id": "JKY7gAixTfe1PxI6Mw1Naw_X4",
+      "name": "Jack Miller #4",
+      "role": "Lighting Designer ",
+      "company": "AVS"
+    },
+    {
+      "id": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "name": "Barry Roberts #4",
+      "role": "Lighting Designer",
+      "company": "AVS"
+    },
+    {
+      "id": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "name": "Bob Fischer #4",
+      "role": "Room Tech",
+      "company": "AVS"
+    },
+    {
+      "id": "FsnalWZgQP2c03Jvl1bWqg_X4",
+      "name": "Bob Brown #4",
       "role": "Audio",
       "company": "AVS"
     }
@@ -142,7 +235,305 @@
     {
       "Date": "2026-04-23T00:00:00.000Z",
       "accommodated": false,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-24T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "q3hoGGIKTA6OLAEFy6Ip5w_X1",
+      "slot2": 0
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X1",
+      "slot1": 0,
+      "slot2": 0,
+      "slot3": 0,
+      "slot4": 0,
+      "slot5": 0,
+      "slot6": 0
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "uCTLNpKsSuencYzskshkmQ_X1",
+      "slot1": 7,
+      "slot2": 9,
+      "slot3": 8
+    },
+    {
+      "Date": "2026-04-23T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -153,7 +544,7 @@
     {
       "Date": "2026-04-24T00:00:00.000Z",
       "accommodated": false,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -164,7 +555,7 @@
     {
       "Date": "2026-04-11T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -175,7 +566,7 @@
     {
       "Date": "2026-04-12T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -186,7 +577,7 @@
     {
       "Date": "2026-04-14T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -197,7 +588,7 @@
     {
       "Date": "2026-04-13T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -208,7 +599,7 @@
     {
       "Date": "2026-04-15T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot4": 1,
@@ -218,7 +609,7 @@
     {
       "Date": "2026-04-16T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -229,7 +620,7 @@
     {
       "Date": "2026-04-17T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -240,7 +631,7 @@
     {
       "Date": "2026-04-18T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -251,7 +642,7 @@
     {
       "Date": "2026-04-19T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -262,7 +653,7 @@
     {
       "Date": "2026-04-20T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -273,7 +664,7 @@
     {
       "Date": "2026-04-22T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -284,7 +675,7 @@
     {
       "Date": "2026-04-21T00:00:00.000Z",
       "accommodated": true,
-      "name": "UMH08v0ATeqr3nUgzCgmPw",
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -295,13 +686,13 @@
     {
       "Date": "2026-04-15T00:00:00.000Z",
       "accommodated": false,
-      "name": "q3hoGGIKTA6OLAEFy6Ip5w",
+      "name": "q3hoGGIKTA6OLAEFy6Ip5w_X1",
       "slot2": 0
     },
     {
       "Date": "2026-04-11T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -312,7 +703,7 @@
     {
       "Date": "2026-04-13T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -323,7 +714,7 @@
     {
       "Date": "2026-04-12T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -334,7 +725,7 @@
     {
       "Date": "2026-04-14T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -345,7 +736,7 @@
     {
       "Date": "2026-04-16T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -356,7 +747,7 @@
     {
       "Date": "2026-04-15T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot4": 1,
@@ -366,7 +757,7 @@
     {
       "Date": "2026-04-17T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -377,7 +768,7 @@
     {
       "Date": "2026-04-18T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -388,7 +779,7 @@
     {
       "Date": "2026-04-21T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -399,7 +790,7 @@
     {
       "Date": "2026-04-20T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -410,7 +801,7 @@
     {
       "Date": "2026-04-19T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -421,7 +812,7 @@
     {
       "Date": "2026-04-22T00:00:00.000Z",
       "accommodated": true,
-      "name": "sqhyBGaUQJuO8kWi-6pybA",
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X2",
       "slot1": 1,
       "slot2": 1,
       "slot3": 1,
@@ -432,10 +823,640 @@
     {
       "Date": "2026-04-15T00:00:00.000Z",
       "accommodated": false,
-      "name": "uCTLNpKsSuencYzskshkmQ",
+      "name": "uCTLNpKsSuencYzskshkmQ_X1",
+      "slot1": 8,
+      "slot2": 10,
+      "slot3": 9
+    },
+    {
+      "Date": "2026-04-23T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-24T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "q3hoGGIKTA6OLAEFy6Ip5w_X1",
+      "slot2": 0
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X3",
+      "slot1": 2,
+      "slot2": 2,
+      "slot3": 2,
+      "slot4": 2,
+      "slot5": 2,
+      "slot6": 2
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "uCTLNpKsSuencYzskshkmQ_X2",
+      "slot1": 9,
+      "slot2": 11,
+      "slot3": 10
+    },
+    {
+      "Date": "2026-04-23T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-24T00:00:00.000Z",
+      "accommodated": false,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "UMH08v0ATeqr3nUgzCgmPw_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "q3hoGGIKTA6OLAEFy6Ip5w_X1",
+      "slot2": 0
+    },
+    {
+      "Date": "2026-04-11T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-13T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-12T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-14T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-16T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-17T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-18T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-21T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-20T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-19T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-22T00:00:00.000Z",
+      "accommodated": true,
+      "name": "sqhyBGaUQJuO8kWi-6pybA_X4",
+      "slot1": 1,
+      "slot2": 1,
+      "slot3": 1,
+      "slot4": 1,
+      "slot5": 1,
+      "slot6": 1
+    },
+    {
+      "Date": "2026-04-15T00:00:00.000Z",
+      "accommodated": false,
+      "name": "uCTLNpKsSuencYzskshkmQ_X1",
       "slot1": 8,
       "slot2": 10,
       "slot3": 9
     }
+  ,
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "JKY7gAixTfe1PxI6Mw1Naw_X1", "slot1": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "JKY7gAixTfe1PxI6Mw1Naw_X2", "slot1": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "JKY7gAixTfe1PxI6Mw1Naw_X3", "slot1": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "JKY7gAixTfe1PxI6Mw1Naw_X4", "slot1": 1 },
+
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": false, "name": "uCTLNpKsSuencYzskshkmQ_X1", "slot2": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": false, "name": "uCTLNpKsSuencYzskshkmQ_X2", "slot2": 1 },
+
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": false, "name": "q3hoGGIKTA6OLAEFy6Ip5w_X1", "slot2": 1 },
+
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "sqhyBGaUQJuO8kWi-6pybA_X1", "slot3": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "sqhyBGaUQJuO8kWi-6pybA_X2", "slot3": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "sqhyBGaUQJuO8kWi-6pybA_X3", "slot3": 1 },
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": true,  "name": "sqhyBGaUQJuO8kWi-6pybA_X4", "slot3": 1 },
+
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": true,  "name": "UMH08v0ATeqr3nUgzCgmPw_X1", "slot1": 1 },
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": true,  "name": "UMH08v0ATeqr3nUgzCgmPw_X2", "slot1": 1 },
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": true,  "name": "UMH08v0ATeqr3nUgzCgmPw_X3", "slot1": 1 },
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": true,  "name": "UMH08v0ATeqr3nUgzCgmPw_X4", "slot1": 1 },
+
+    { "Date": "2026-04-20T00:00:00.000Z", "accommodated": true,  "name": "FsnalWZgQP2c03Jvl1bWqg_X1", "slot2": 1 },
+    { "Date": "2026-04-20T00:00:00.000Z", "accommodated": true,  "name": "FsnalWZgQP2c03Jvl1bWqg_X2", "slot2": 1 },
+    { "Date": "2026-04-20T00:00:00.000Z", "accommodated": true,  "name": "FsnalWZgQP2c03Jvl1bWqg_X3", "slot2": 1 },
+    { "Date": "2026-04-20T00:00:00.000Z", "accommodated": true,  "name": "FsnalWZgQP2c03Jvl1bWqg_X4", "slot2": 1 }
+  ,
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": false, "name": "uCTLNpKsSuencYzskshkmQ",       "slot1": 6, "slot2": 8, "slot3": 6 },
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": false, "name": "uCTLNpKsSuencYzskshkmQ",       "slot1": 4, "slot2": 5, "slot3": 4 },
+
+    { "Date": "2026-04-18T00:00:00.000Z", "accommodated": false, "name": "q3hoGGIKTA6OLAEFy6Ip5w",       "slot1": 3, "slot2": 6, "slot3": 3 },
+    { "Date": "2026-04-19T00:00:00.000Z", "accommodated": false, "name": "q3hoGGIKTA6OLAEFy6Ip5w",       "slot1": 2, "slot2": 4, "slot3": 2 },
+
+    { "Date": "2026-04-20T00:00:00.000Z", "accommodated": false, "name": "8gHYYqGJQjOBBoOCns1UhQ",       "slot1": 5, "slot2": 5, "slot3": 5 },
+    { "Date": "2026-04-21T00:00:00.000Z", "accommodated": false, "name": "8gHYYqGJQjOBBoOCns1UhQ",       "slot1": 4, "slot2": 4, "slot3": 4 }
   ]
 }
