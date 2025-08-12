@@ -5,6 +5,10 @@ import { fileURLToPath } from "url";
 import { parseISO, format } from "date-fns";
 import { getStorage } from "firebase-admin/storage";
 
+// High-precision timers
+const nowNs = () => process.hrtime.bigint();
+const nsToMs = (ns) => Number(ns) / 1e6;
+
 // NEW: delegate builders
 import { buildExcel } from "./buildExcel.js";
 import { buildHtml } from "./buildHtml.js";
@@ -18,6 +22,9 @@ const __dirname = dirname(__filename);
 
 export async function mealsPivotHandler(req, res) {
   try {
+    const totalStart = nowNs();
+    const startedAt = new Date().toISOString();
+
     const { eventName = "Event", dates = [], slots = [], names = [], tags = [], data = [] } = req.body;
 
     // --- Basic validation of inbound JSON ---
@@ -125,6 +132,8 @@ export async function mealsPivotHandler(req, res) {
       localXlsxPath = join(tmpdir(), xlsxFileName);
     }
 
+    const excelStart = nowNs();
+
     await buildExcel({
       outputPath: localXlsxPath,
       eventName,
@@ -138,6 +147,8 @@ export async function mealsPivotHandler(req, res) {
       otherIds,
       descFontSize: DESC_FONT_SIZE
     });
+
+    const excelMs = Math.round(nsToMs(nowNs() - excelStart));
 
     // --- 2) Upload Excel if in cloud to obtain a public URL ---
     let excelHrefForHtml = xlsxFileName; // local case: link to file name in /output alongside HTML
@@ -169,6 +180,8 @@ export async function mealsPivotHandler(req, res) {
       localHtmlPath = join(tmpdir(), cloudHtmlFileName);
     }
 
+    const htmlStart = nowNs();
+
     const htmlString = await buildHtml({
       eventName,
       dateLabels,
@@ -191,6 +204,8 @@ export async function mealsPivotHandler(req, res) {
       await fs.promises.writeFile(localHtmlPath, htmlString, 'utf8');
     }
 
+    const htmlMs = Math.round(nsToMs(nowNs() - htmlStart));
+
     // --- 4) Upload HTML in cloud and return links ---
     if (!isRunningLocally) {
       const bucket = getStorage().bucket();
@@ -201,11 +216,25 @@ export async function mealsPivotHandler(req, res) {
       });
       await bucket.file(htmlDest).makePublic();
       const htmlUrl = `https://storage.googleapis.com/${bucket.name}/${htmlDest}`;
-      return res.json({ status: 'success', fileUrl: excelUrl, htmlUrl });
+      const totalMs = Math.round(nsToMs(nowNs() - totalStart));
+      const finishedAt = new Date().toISOString();
+      return res.json({
+        status: 'success',
+        fileUrl: excelUrl,
+        htmlUrl,
+        timings: { startedAt, finishedAt, totalMs, excelMs, htmlMs }
+      });
     }
 
     // Local success payload
-    return res.json({ status: 'success', localXlsxPath, localHtmlPath });
+    const totalMs = Math.round(nsToMs(nowNs() - totalStart));
+    const finishedAt = new Date().toISOString();
+    return res.json({
+      status: 'success',
+      localXlsxPath,
+      localHtmlPath,
+      timings: { startedAt, finishedAt, totalMs, excelMs, htmlMs }
+    });
 
   } catch (err) {
     console.error("❌ Error in mealsPivotHandler:", err);
