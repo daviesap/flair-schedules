@@ -45,6 +45,8 @@ export async function buildHtml({
   for (const lbl of dateLabels) {
     groupHeaderCells.push(`<th class="group-header group" colspan="${sortedSlots.length}" >${esc(lbl)}</th>`);
   }
+  // Totals column header
+  groupHeaderCells.push('<th class="group-header total-col">Total</th>');
 
   // Slot headers (B/L/D/O/TC...)
   const slotHeaderCells = ['<th></th>','<th></th>','<th></th>'];
@@ -55,6 +57,8 @@ export async function buildHtml({
       slotHeaderCells.push(`<th class="slot-header slot${extraClass}">${esc(abb)}</th>`);
     }
   }
+  // Totals column (slot header row)
+  slotHeaderCells.push('<th class="slot-header total-col">Total</th>');
 
   // Description headers (one per date, spanning all that date's slots)
   const descHeaderCells = ['<th></th>','<th></th>','<th></th>'];
@@ -63,6 +67,8 @@ export async function buildHtml({
     // No first-slot needed for description row since it spans all slots for each date
     descHeaderCells.push(`<th class="date-desc" colspan="${sortedSlots.length}"><span class="desc-text">${esc(desc)}</span></th>`);
   }
+  // Extra empty cell for per-person Total column
+  descHeaderCells.push('<th class="total-col"></th>');
 
   // Body
   const bodyRows = [];
@@ -83,6 +89,8 @@ export async function buildHtml({
         cells.push(`<td class="meal-num${extraClass}"></td>`);
       }
     }
+    // Totals column cell (blank in section header)
+    cells.push('<td class="meal-num total-col"></td>');
     bodyRows.push(`<tr class="section-row">${cells.join('')}</tr>`);
     for (const pid of ids) {
       const p = peopleMap.get(pid) || { name: pid, company: '', role: '' };
@@ -91,15 +99,20 @@ export async function buildHtml({
         `<td class="left">${esc(p.company)}</td>`,
         `<td class="left">${esc(p.role)}</td>`
       ];
+      let rowTotal = 0;
       for (let i = 0; i < allDates.length; i++) {
         const iso = allDates[i];
         const meals = (pivot[pid] && pivot[pid][iso]) ? pivot[pid][iso] : {};
         for (let j = 0; j < sortedSlots.length; j++) {
           const { abb } = sortedSlots[j];
           const extraClass = (j === 0) ? ' first-slot' : '';
-          cells.push(`<td class="meal-num num${extraClass}">${esc(meals[abb] ?? '')}</td>`);
+          const v = meals[abb];
+          if (typeof v === 'number') rowTotal += v;
+          cells.push(`<td class="meal-num num${extraClass}">${esc(v ?? '')}</td>`);
         }
       }
+      // Per-person total cell at far right
+      cells.push(`<td class="meal-num num total-col">${rowTotal}</td>`);
       bodyRows.push(`<tr>${cells.join('')}</tr>`);
     }
   };
@@ -109,6 +122,7 @@ export async function buildHtml({
   // Totals row
   const allIds = [...accommodatedIds, ...otherIds];
   const totalsCells = ['<td class="total left meal-total-label" colspan="3">TOTAL</td>'];
+  let grandTotal = 0; // sum of all per-date/slot totals (should match sum of per-person totals column)
   for (let i = 0; i < allDates.length; i++) {
     const iso = allDates[i];
     for (let j = 0; j < sortedSlots.length; j++) {
@@ -119,10 +133,13 @@ export async function buildHtml({
         const v = meals[abb];
         if (typeof v === 'number') sum += v;
       }
+      grandTotal += sum;
       const extraClass = (j === 0) ? ' first-slot' : '';
       totalsCells.push(`<td class="total num meal-total${extraClass}">${sum}</td>`);
     }
   }
+  // Bottom-right grand total (aligns with per-person Total column)
+  totalsCells.push(`<td class="total num total-col grand-total">${grandTotal}</td>`);
   const totalsRowHtml = `<tr class="totals-row">${totalsCells.join('')}</tr>`;
 
   // Key table

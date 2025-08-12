@@ -57,6 +57,8 @@ export async function buildExcel({
     mergeRanges.push([start, end]);
     col += sortedSlots.length;
   }
+  // Totals column header
+  headerRowValues.push("Total");
   const headerRowNum = 5;
   headerRowValues.forEach((v, idx) => {
     const cell = sheet.getCell(headerRowNum, idx + 1);
@@ -69,7 +71,7 @@ export async function buildExcel({
   }
 
   // Row 6: description row (merged per-date, centered, wrap)
-  const totalCols = 3 + allDates.length * sortedSlots.length;
+  const totalCols = 3 + allDates.length * sortedSlots.length + 1;
   const descRow = sheet.addRow(new Array(totalCols).fill(""));
   const descRowNum = descRow.number;
 
@@ -96,6 +98,7 @@ export async function buildExcel({
   for (let i = 0; i < allDates.length; i++) {
     for (const s of sortedSlots) slotRow.push(s.abb);
   }
+  slotRow.push("Total");
   const slotRowObj = sheet.addRow(slotRow);
   slotRowObj.font = { bold: true };
   slotRowObj.alignment = { vertical: "middle", horizontal: "center" };
@@ -121,7 +124,18 @@ export async function buildExcel({
         const meals = (pivot[pid] && pivot[pid][d]) ? pivot[pid][d] : {};
         for (const { abb } of sortedSlots) vals.push(meals[abb] || "");
       }
-      sheet.addRow(vals);
+      {
+        // Append per-person Total column with SUM across meal cells
+        const firstDataCol = 4;
+        const lastDataCol = 3 + allDates.length * sortedSlots.length;
+        const totalColIdx = lastDataCol + 1;
+        const row = sheet.addRow(vals.concat([""]));
+        const firstLetter = sheet.getColumn(firstDataCol).letter;
+        const lastLetter = sheet.getColumn(lastDataCol).letter;
+        row.getCell(totalColIdx).value = { formula: `SUM(${firstLetter}${row.number}:${lastLetter}${row.number})` };
+        row.getCell(totalColIdx).font = { bold: true };
+        row.getCell(totalColIdx).alignment = { horizontal: "center", vertical: "middle" };
+      }
     }
   };
 
@@ -182,6 +196,19 @@ export async function buildExcel({
     startCol += sortedSlots.length;
   }
 
+  // Right border for Totals column
+  const totalColIdx = sheet.columnCount;
+  for (let r = firstRowWithSlots; r <= lastRowWithTotals; r++) {
+    const cell = sheet.getRow(r).getCell(totalColIdx);
+    cell.border = { ...(cell.border || {}), right: { style: 'medium', color: { argb: 'FF000000' } } };
+  }
+
+  // Left border for Totals column
+  for (let r = firstRowWithSlots; r <= lastRowWithTotals; r++) {
+    const cell = sheet.getRow(r).getCell(totalColIdx);
+    cell.border = { ...(cell.border || {}), left: { style: 'medium', color: { argb: 'FF000000' } }, ...(cell.border || {}) };
+  }
+
   // Outer border
   const medium = { style: 'medium', color: { argb: 'FF000000' } };
   const topRow = 5, bottomRow = sheet.lastRow.number, leftCol = 1, rightCol = sheet.columnCount;
@@ -195,7 +222,15 @@ export async function buildExcel({
   }
 
   // Column widths
-  sheet.columns.forEach((col, idx) => { col.width = idx < 3 ? 20 : 3; });
+  sheet.columns.forEach((col, idx) => {
+    if (idx < 3) {
+      col.width = 20;
+    } else if (idx === sheet.columns.length - 1) {
+      col.width = 5; // Totals column width
+    } else {
+      col.width = 3;
+    }
+  });
 
   // Key table
   const keyStartRow = sheet.lastRow.number + 2;

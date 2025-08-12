@@ -104,10 +104,11 @@ export async function mealsPivotHandler(req, res) {
     const otherIds = allPersonIds.filter(pid => !isAccommodated(pid)).sort(cmp);
 
     // --- Filenames and environment ---
-    const ts = Date.now();
-    const xlsxFileName = `${eventName}_Catering_${ts}.xlsx`;
-    const localHtmlFileName = `${eventName}_Catering_local.html`; // fixed local name for browser refresh
-    const cloudHtmlFileName = `${eventName}_Catering_${ts}.html`; // versioned for cloud
+    const stamp = format(new Date(), "yyyyMMdd_HHmmss");
+    const safeEvent = String(eventName).replace(/[^A-Za-z0-9-_ ]+/g, "").trim().replace(/\s+/g, "_");
+    const xlsxFileName = `${safeEvent}_Catering_${stamp}.xlsx`;
+    const localHtmlFileName = `${safeEvent}_Catering_local.html`; // fixed local name for browser refresh
+    const cloudHtmlFileName = `${safeEvent}_Catering_${stamp}.html`; // versioned for cloud
 
     const generatedAtText = format(new Date(), "EEEE d MMM yyyy, h:mm a");
     const isRunningLocally = process.env.FUNCTIONS_EMULATOR === 'true';
@@ -147,7 +148,10 @@ export async function mealsPivotHandler(req, res) {
       const xlsxDest = `meals/${xlsxFileName}`;
       await bucket.upload(localXlsxPath, {
         destination: xlsxDest,
-        metadata: { contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+        metadata: { 
+          contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          cacheControl: 'no-cache, max-age=0'
+        }
       });
       await bucket.file(xlsxDest).makePublic();
       excelUrl = `https://storage.googleapis.com/${bucket.name}/${xlsxDest}`;

@@ -213,3 +213,8 @@ table.key {
   margin-left: 0;   /* align to left edge */
   margin-right: auto; /* push remaining space to the right */
 }
+
+/* Left border for all cells in the Totals column */
+.total-col {
+  border-left: 2px solid black;
+}
