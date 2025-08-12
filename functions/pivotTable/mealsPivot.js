@@ -22,6 +22,10 @@ const __dirname = dirname(__filename);
 
 export async function mealsPivotHandler(req, res) {
   try {
+    const mode = (req.query.mode || 'both').toLowerCase(); // 'html' | 'excel' | 'both'
+    const doExcel = mode === 'both' || mode === 'excel';
+    const doHtml  = mode === 'both' || mode === 'html';
+
     const totalStart = nowNs();
     const startedAt = new Date().toISOString();
 
@@ -120,102 +124,111 @@ export async function mealsPivotHandler(req, res) {
     const generatedAtText = format(new Date(), "EEEE d MMM yyyy, h:mm a");
     const isRunningLocally = process.env.FUNCTIONS_EMULATOR === 'true';
 
-    // --- 1) Build Excel and persist to disk ---
-    let localXlsxPath;
-    if (isRunningLocally) {
-      // Save to local /output folder for convenience
-      const fs = await import('fs');
-      const localDir = '/Users/apndavies/Coding/flair-schedules/output';
-      if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
-      localXlsxPath = `${localDir}/${xlsxFileName}`;
-    } else {
-      localXlsxPath = join(tmpdir(), xlsxFileName);
-    }
-
-    const excelStart = nowNs();
-
-    await buildExcel({
-      outputPath: localXlsxPath,
-      eventName,
-      allDates,
-      dateLabels,
-      sortedSlots,
-      descByIso,
-      peopleMap,
-      pivot,
-      accommodatedIds,
-      otherIds,
-      descFontSize: DESC_FONT_SIZE
-    });
-
-    const excelMs = Math.round(nsToMs(nowNs() - excelStart));
-
-    // --- 2) Upload Excel if in cloud to obtain a public URL ---
-    let excelHrefForHtml = xlsxFileName; // local case: link to file name in /output alongside HTML
+    let excelMs = null;
     let excelUrl = null;
+    let excelHrefForHtml = null;
+    let localXlsxPath;
 
-    if (!isRunningLocally) {
-      const bucket = getStorage().bucket();
-      const xlsxDest = `meals/${xlsxFileName}`;
-      await bucket.upload(localXlsxPath, {
-        destination: xlsxDest,
-        metadata: { 
-          contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          cacheControl: 'no-cache, max-age=0'
-        }
+    if (doExcel) {
+      // --- 1) Build Excel and persist to disk ---
+      if (isRunningLocally) {
+        // Save to local /output folder for convenience
+        const fs = await import('fs');
+        const localDir = '/Users/apndavies/Coding/flair-schedules/output';
+        if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
+        localXlsxPath = `${localDir}/${xlsxFileName}`;
+      } else {
+        localXlsxPath = join(tmpdir(), xlsxFileName);
+      }
+
+      const excelStart = nowNs();
+
+      await buildExcel({
+        outputPath: localXlsxPath,
+        eventName,
+        allDates,
+        dateLabels,
+        sortedSlots,
+        descByIso,
+        peopleMap,
+        pivot,
+        accommodatedIds,
+        otherIds,
+        descFontSize: DESC_FONT_SIZE
       });
-      await bucket.file(xlsxDest).makePublic();
-      excelUrl = `https://storage.googleapis.com/${bucket.name}/${xlsxDest}`;
-      excelHrefForHtml = excelUrl;
+
+      excelMs = Math.round(nsToMs(nowNs() - excelStart));
+
+      // --- Upload Excel if in cloud to obtain a public URL ---
+      if (!isRunningLocally) {
+        const bucket = getStorage().bucket();
+        const xlsxDest = `meals/${xlsxFileName}`;
+        await bucket.upload(localXlsxPath, {
+          destination: xlsxDest,
+          metadata: { 
+            contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            cacheControl: 'no-cache, max-age=0'
+          }
+        });
+        await bucket.file(xlsxDest).makePublic();
+        excelUrl = `https://storage.googleapis.com/${bucket.name}/${xlsxDest}`;
+        excelHrefForHtml = excelUrl;
+      } else {
+        excelHrefForHtml = xlsxFileName; // relative link next to HTML for local preview
+      }
     }
 
-    // --- 3) Build HTML (inject Excel link) and persist ---
+    let htmlMs = null;
     let localHtmlPath;
-    if (isRunningLocally) {
-      const fs = await import('fs');
-      const localDir = '/Users/apndavies/Coding/flair-schedules/output';
-      if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
-      localHtmlPath = `${localDir}/${localHtmlFileName}`;
-    } else {
-      localHtmlPath = join(tmpdir(), cloudHtmlFileName);
-    }
 
-    const htmlStart = nowNs();
+    if (doHtml) {
+      if (isRunningLocally) {
+        const fs = await import('fs');
+        const localDir = '/Users/apndavies/Coding/flair-schedules/output';
+        if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
+        localHtmlPath = `${localDir}/${localHtmlFileName}`;
+      } else {
+        localHtmlPath = join(tmpdir(), cloudHtmlFileName);
+      }
 
-    const htmlString = await buildHtml({
-      eventName,
-      dateLabels,
-      allDates,
-      sortedSlots,
-      descByIso,
-      peopleMap,
-      pivot,
-      accommodatedIds,
-      otherIds,
-      generatedAtText,
-      excelHref: excelHrefForHtml,
-      // Allow builder to resolve css/template relative to its own directory
-      cssPath: join(__dirname, 'mealsPivot.css'),
-      htmlTemplatePath: join(__dirname, 'mealsPivot.html')
-    });
+      const htmlStart = nowNs();
 
-    {
-      const fs = await import('fs');
-      await fs.promises.writeFile(localHtmlPath, htmlString, 'utf8');
-    }
-
-    const htmlMs = Math.round(nsToMs(nowNs() - htmlStart));
-
-    // --- 4) Upload HTML in cloud and return links ---
-    if (!isRunningLocally) {
-      const bucket = getStorage().bucket();
-      const htmlDest = `meals/${cloudHtmlFileName}`;
-      await bucket.upload(localHtmlPath, {
-        destination: htmlDest,
-        metadata: { contentType: 'text/html', cacheControl: 'no-cache, max-age=0' }
+      const htmlString = await buildHtml({
+        eventName,
+        dateLabels,
+        allDates,
+        sortedSlots,
+        descByIso,
+        peopleMap,
+        pivot,
+        accommodatedIds,
+        otherIds,
+        generatedAtText,
+        excelHref: excelHrefForHtml, // null or url/relative, depending on doExcel
+        cssPath: join(__dirname, 'mealsPivot.css'),
+        htmlTemplatePath: join(__dirname, 'mealsPivot.html')
       });
-      await bucket.file(htmlDest).makePublic();
-      const htmlUrl = `https://storage.googleapis.com/${bucket.name}/${htmlDest}`;
+
+      {
+        const fs = await import('fs');
+        await fs.promises.writeFile(localHtmlPath, htmlString, 'utf8');
+      }
+
+      htmlMs = Math.round(nsToMs(nowNs() - htmlStart));
+    }
+
+    if (!isRunningLocally) {
+      let htmlUrl = null;
+      if (doHtml) {
+        const bucket = getStorage().bucket();
+        const htmlDest = `meals/${cloudHtmlFileName}`;
+        await bucket.upload(localHtmlPath, {
+          destination: htmlDest,
+          metadata: { contentType: 'text/html', cacheControl: 'no-cache, max-age=0' }
+        });
+        await bucket.file(htmlDest).makePublic();
+        htmlUrl = `https://storage.googleapis.com/${bucket.name}/${htmlDest}`;
+      }
       const totalMs = Math.round(nsToMs(nowNs() - totalStart));
       const finishedAt = new Date().toISOString();
       return res.json({
@@ -226,13 +239,12 @@ export async function mealsPivotHandler(req, res) {
       });
     }
 
-    // Local success payload
     const totalMs = Math.round(nsToMs(nowNs() - totalStart));
     const finishedAt = new Date().toISOString();
     return res.json({
       status: 'success',
-      localXlsxPath,
-      localHtmlPath,
+      localXlsxPath: doExcel ? localXlsxPath : null,
+      localHtmlPath: doHtml ? localHtmlPath : null,
       timings: { startedAt, finishedAt, totalMs, excelMs, htmlMs }
     });
 

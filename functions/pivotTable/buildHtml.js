@@ -159,6 +159,13 @@ export async function buildHtml({
   let template = (await fs.promises.readFile(htmlTemplatePath, "utf8")).trim();
   if (!template) throw new Error(`HTML template at ${htmlTemplatePath} is empty`);
 
+  // Hide Excel download link if no valid href
+  if (!excelHref) {
+    // Remove entire actions div if it exists, otherwise remove anchor with EXCEL_URL
+    template = template.replace(/<div[^>]*class="[^"]*\bactions\b[^"]*"[^>]*>[\s\S]*?<\/div>/i, '');
+    template = template.replace(/<a[^>]*\{\{EXCEL_URL\}\}[^>]*>[\s\S]*?<\/a>/i, '');
+  }
+
   // Fill template
   const htmlPrepared = template
     .replace('/* {{CSS}} */', htmlCss)
